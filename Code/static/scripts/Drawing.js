@@ -16,11 +16,13 @@ export function GetCanvHeight(CanvasRect) {
  */
 export function RedrawCanvas(Canvas, points) {
     Canvas.background(225, 225, 255);
-    for (const p of points) {
-        let xColor = p.x * 255;
-        let yColor = (1 - p.y) * 255;
-        let pColor = Canvas.color(xColor, yColor, xColor + yColor);
+    let length = points.length;
+    for (let i = 0; i < length; i++) {
+        let r = (i + 1) * 255 / length;
+        let g = 255 - r;
+        let p = points[i];
+        let pColor = Canvas.color(r, g, 0);
         Canvas.fill(pColor);
-        Canvas.ellipse(p.x * Canvas.width, p.y * Canvas.height, 10, 10);
+        Canvas.ellipse(p.x, p.y, 10, 10);
     }
 }

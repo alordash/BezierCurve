@@ -7,9 +7,17 @@ import { GetCanvHeight, GetCanvWidth, RedrawCanvas } from './Drawing.js';
  */
 var points = [];
 
+//#region Canvas
 var Canvas;
-var CanvasObject;
+var CanvasHolder = document.getElementById("CanvasHolder");
 var CanvasRect;
+//#endregion Canvas
+
+//#region MouseOverlay
+var MouseOverlay;
+var MouseOverlayRect;
+const Radius = 20;
+//#endregion
 
 var PointCounter = document.getElementById("PointsCounter");
 
@@ -22,8 +30,8 @@ ClearButton.onclick = function () {
 
 var StartButton = document.getElementById("StartButton");
 StartButton.onclick = function () {
-    if (typeof (CanvasObject) != 'undefined') {
-        CanvasObject.parentNode.removeChild(CanvasObject);
+    if (typeof (Canvas) != 'undefined') {
+        Canvas.canvas.parentNode.removeChild(Canvas.canvas);
     }
     points = [];
     setup();
@@ -36,17 +44,61 @@ function UpdateCounter() {
     PointCounter.textContent = points.length;
 }
 
+function UpdateOverlayPosition(e) {
+    MouseOverlay.canvas.style.left = `${e.pageX - Radius}px`;
+    MouseOverlay.canvas.style.top = `${e.pageY - Radius}px`;
+}
+
+let countMove = true;
+let moveTimer;
+let mouseMoveCounter = 0;
+let mouseMovePeriod = 3;
+
 function canvasOnlick(e) {
-    let x = e.offsetX / CanvasObject.width;
-    let y = e.offsetY / CanvasObject.height;
-    if (!e.shiftKey) {
-        points.push(new Point(x, y));
-    } else {
+    let isDown = e.type == 'mousedown';
+    if (e.buttons || isDown) {
+        let resume = true;
+        if (isDown) {
+            if (!e.shiftKey) {
+                countMove = false;
+                moveTimer = setTimeout(() => {
+                    countMove = true;
+                }, 100);
+            }
+        } else {
+            mouseMoveCounter = (mouseMoveCounter + 1) % mouseMovePeriod;
+            if (!countMove || (!e.shiftKey && mouseMoveCounter != 0)) {
+                resume = false
+            }
+        }
+        if (resume) {
+            let x = (e.pageX + document.body.scrollLeft + Canvas.canvas.scrollLeft - Canvas.canvas.offsetLeft - parseInt(Canvas.canvas.style.borderWidth));
+            let y = (e.pageY + document.body.scrollTop + Canvas.canvas.scrollTop - Canvas.canvas.offsetTop - parseInt(Canvas.canvas.style.borderWidth));
+            let p = new Point(x, y);
+            if (!e.shiftKey && e.which == 1) {
+                points.push(p);
+            } else {
+                for (let i = 0; i < points.length; i++) {
+                    if (points[i].distance(p) <= Radius) {
+                        points.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
 
+            UpdateCounter();
+            RedrawCanvas(Canvas, points);
+            if (e.shiftKey) {
+                MouseOverlay.canvas.style.display = 'block';
+                UpdateOverlayPosition(e);
+            }
+        }
     }
+}
 
-    UpdateCounter();
-    RedrawCanvas(Canvas, points);
+function canvasOnMouseUp() {
+    clearTimeout(moveTimer);
+    countMove = true;
 }
 
 function setup() {
@@ -54,22 +106,47 @@ function setup() {
         let x = 40;
         let y = 40;
     }
-    
+
     Canvas = new p5(s, "CanvasHolder");
-    
+
     Canvas.canvas.id = "MainCanvas";
-    CanvasObject = Canvas.canvas;
+    Canvas.canvas = Canvas.canvas;
 
-    CanvasObject.style.border = "#000000";
-    CanvasObject.style.borderStyle = "solid";
-    CanvasObject.onclick = canvasOnlick;
+    Canvas.canvas.style.border = "#000000";
+    Canvas.canvas.style.borderStyle = "solid";
+    Canvas.canvas.style.borderWidth = "3px";
+    Canvas.canvas.onmousemove = Canvas.canvas.onmousedown = canvasOnlick;
 
-    CanvasRect = CanvasObject.getBoundingClientRect();
+    CanvasRect = Canvas.canvas.getBoundingClientRect();
 
     Canvas.resizeCanvas(GetCanvWidth(CanvasRect), GetCanvHeight(CanvasRect));
+
+    MouseOverlay = new p5(s, "MouseOverlay");
+    MouseOverlay.canvas.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * Radius}px;width: ${2 * Radius}px;height: ${2 * Radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
+    MouseOverlay.canvas.onmousemove = MouseOverlay.canvas.onmousedown = canvasOnlick;
+    MouseOverlayRect = MouseOverlay.canvas.getBoundingClientRect();
+
+    Canvas.canvas.onmouseup = MouseOverlay.canvas.onmouseup = canvasOnMouseUp;
 }
 
 window.onresize = function () {
     Canvas.resizeCanvas(GetCanvWidth(CanvasRect), GetCanvHeight(CanvasRect));
     RedrawCanvas(Canvas, points);
+}
+
+window.onkeyup = function (e) {
+    if (!e.shiftKey) {
+        MouseOverlay.canvas.style.display = 'none';
+    }
+}
+
+window.onmousemove = function (e) {
+    if (typeof (MouseOverlay) != 'undefined') {
+        if (e.shiftKey) {
+            MouseOverlay.canvas.style.display = 'block';
+        } else {
+            MouseOverlay.canvas.style.display = 'none';
+        }
+        UpdateOverlayPosition(e);
+    }
 }
