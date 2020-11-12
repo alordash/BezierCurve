@@ -5,6 +5,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
     <meta charset="utf-8" />
+    <style>
+        .info {
+            width: 150px;
+            background: rgb(255, 245, 206);
+            padding: 2px;
+            border: solid 1px black;
+            float: left;
+            position: absolute;
+            top: 5px;
+            left: 160px;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,6 +29,10 @@
     <br />
     <div id="CanvasHolder"></div>
     <div id="MouseOverlay"></div>
+    
+    <div class="info">Press LMB to draw
+        Shift + LMB to erase
+    </div>
 </body>
 
 </html>
