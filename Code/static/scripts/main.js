@@ -18,14 +18,21 @@ const maxRadius = 150;
 var Radius = minRadius;
 //#endregion
 
+//#region Points
 function ClearPoints() {
-    while(typeof(points[0]) != 'undefined') {
+    while (typeof (points[0]) != 'undefined') {
         points[0].remove();
         points.splice(0, 1);
     }
 }
+var PointsContainter = document.getElementById("PointsContainter");
 
 var PointCounter = document.getElementById("PointsCounter");
+
+let ZeroPoint = document.getElementById("ZeroPoint");
+let PointStyle = getComputedStyle(ZeroPoint);
+ZeroPoint.style.display = 'none';
+//#endregion
 
 var ClearButton = document.getElementById("ClearButton");
 ClearButton.onclick = function () {
@@ -46,7 +53,6 @@ StartButton.onclick = function () {
     UpdateCounter();
 }
 
-var PointsContainter = document.getElementById("PointsContainter");
 
 function UpdateCounter() {
     PointCounter.textContent = points.length;
@@ -98,7 +104,13 @@ function canvasMouseEvent(e) {
                 resume = false
             }
         }
-        if (resume) {
+        let CanvasRect = Canvas.canvas.getBoundingClientRect();
+        let w = parseInt(PointStyle.width);
+        let h = parseInt(PointStyle.height);
+        let bw = parseInt(Canvas.canvas.style.borderWidth);
+        let r = new Rectangle(CanvasRect.x + w / 2 + bw, CanvasRect.y + h / 2 + bw, parseInt(Canvas.canvas.style.width) - w, parseInt(Canvas.canvas.style.height) - h);
+        let rawPoint = new Point(e.pageX, e.pageY);
+        if (rawPoint.isInRect(r) && resume) {
             let x = (e.pageX + document.body.scrollLeft + Canvas.canvas.scrollLeft - Canvas.canvas.offsetLeft - parseInt(Canvas.canvas.style.borderWidth));
             let y = (e.pageY + document.body.scrollTop + Canvas.canvas.scrollTop - Canvas.canvas.offsetTop - parseInt(Canvas.canvas.style.borderWidth));
             let p = new Point(x, y);
@@ -107,8 +119,10 @@ function canvasMouseEvent(e) {
                 let pElement = document.createElement("div");
                 pElement.className = "point";
                 PointsContainter.appendChild(pElement);
-                pElement.style.left = `${e.pageX - pElement.style.width / 2}px`;
-                pElement.style.top = `${e.pageY - pElement.style.height / 2}px`;
+
+                pElement.style.left = `${e.pageX - parseInt(PointStyle.width) / 2}px`;
+                pElement.style.top = `${e.pageY - parseInt(PointStyle.height) / 2}px`;
+
                 p.element = pElement;
                 points.push(p);
             } else {
