@@ -50,6 +50,11 @@ function UpdateOverlay(e) {
     } else {
         MouseOverlay.canvas.style.display = 'none';
     }
+    if(e.buttons) {
+        MouseOverlay.canvas.style.backgroundColor = `rgba(255, 130, 120, 0.4)`;
+    } else {
+        MouseOverlay.canvas.style.background = 'transparent';
+    }
     MouseOverlay.canvas.style.left = `${e.pageX - Radius}px`;
     MouseOverlay.canvas.style.top = `${e.pageY - Radius}px`;
     MouseOverlay.canvas.style.borderRadius = `${1.5 * Radius}px`;
