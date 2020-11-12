@@ -11,6 +11,14 @@ export function GetCanvHeight(Canvas) {
     return hk * window.outerHeight - Canvas.canvas.style.top;
 }
 
+export function GetCanX(x, Canvas) {
+    return x + document.body.scrollLeft + Canvas.canvas.scrollLeft - Canvas.canvas.offsetLeft - parseInt(Canvas.canvas.style.borderWidth);
+}
+
+export function GetCanY(y, Canvas) {
+    return y + document.body.scrollTop + Canvas.canvas.scrollTop - Canvas.canvas.offsetTop - parseInt(Canvas.canvas.style.borderWidth);
+}
+
 /**
  * @param {Array.<Point>} points 
  */
@@ -20,9 +28,6 @@ export function RedrawCanvas(Canvas, points) {
     for (let i = 0; i < length; i++) {
         let r = (i + 1) * 255 / length;
         let g = 255 - r;
-        let p = points[i];
-        let pColor = Canvas.color(r, g, 0);
-        Canvas.fill(pColor);
-        Canvas.ellipse(p.x, p.y, 10, 10);
+        points[i].element.style.background = `rgb(${r}, ${g}, 0)`;
     }
 }

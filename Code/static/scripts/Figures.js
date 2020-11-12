@@ -1,6 +1,7 @@
 export class Point {
     x;
     y;
+    element;
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -12,6 +13,11 @@ export class Point {
 
     isInRect(r) {
         return r.x <= this.x && this.x <= r.x + r.w && r.y <= this.y && this.y <= r.y + r.h;
+    }
+
+    remove() {
+        this.element.parentElement.removeChild(this.element);
+        delete this;
     }
 }
 

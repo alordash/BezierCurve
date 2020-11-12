@@ -18,11 +18,18 @@ const maxRadius = 150;
 var Radius = minRadius;
 //#endregion
 
+function ClearPoints() {
+    while(typeof(points[0]) != 'undefined') {
+        points[0].remove();
+        points.splice(0, 1);
+    }
+}
+
 var PointCounter = document.getElementById("PointsCounter");
 
 var ClearButton = document.getElementById("ClearButton");
 ClearButton.onclick = function () {
-    points = [];
+    ClearPoints();
     UpdateCounter();
     RedrawCanvas(Canvas, points);
 }
@@ -32,12 +39,14 @@ StartButton.onclick = function () {
     if (typeof (Canvas) != 'undefined') {
         Canvas.canvas.parentNode.removeChild(Canvas.canvas);
     }
-    points = [];
+    ClearPoints();
     setup();
     Canvas.resizeCanvas(GetCanvWidth(Canvas), GetCanvHeight(Canvas));
     RedrawCanvas(Canvas, points);
     UpdateCounter();
 }
+
+var PointsContainter = document.getElementById("PointsContainter");
 
 function UpdateCounter() {
     PointCounter.textContent = points.length;
@@ -55,7 +64,7 @@ function UpdateOverlay(e) {
     } else {
         MouseOverlay.canvas.style.display = 'none';
     }
-    if(e.buttons) {
+    if (e.buttons) {
         MouseOverlay.canvas.style.backgroundColor = `rgba(255, 130, 120, 0.4)`;
     } else {
         MouseOverlay.canvas.style.background = 'transparent';
@@ -95,12 +104,19 @@ function canvasMouseEvent(e) {
             let p = new Point(x, y);
 
             if (!e.shiftKey) {
+                let pElement = document.createElement("div");
+                pElement.className = "point";
+                PointsContainter.appendChild(pElement);
+                pElement.style.left = `${e.pageX - pElement.style.width / 2}px`;
+                pElement.style.top = `${e.pageY - pElement.style.height / 2}px`;
+                p.element = pElement;
                 points.push(p);
             } else {
                 let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));
                 Radius = Math.min(maxRadius, Math.max(minRadius, dst));
                 for (let i = 0; i < points.length; i++) {
                     if (points[i].distance(p) <= Radius) {
+                        points[i].remove();
                         points.splice(i, 1);
                         i--;
                     }
@@ -121,10 +137,7 @@ function canvasOnMouseUp() {
 }
 
 function setup() {
-    const s = p => {
-        let x = 40;
-        let y = 40;
-    }
+    const s = p => { }
 
     Canvas = new p5(s, "CanvasHolder");
 
@@ -141,7 +154,6 @@ function setup() {
     MouseOverlay = new p5(s, "MouseOverlay");
     MouseOverlay.canvas.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * Radius}px;width: ${2 * Radius}px;height: ${2 * Radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
     MouseOverlay.canvas.onmousemove = MouseOverlay.canvas.onmousedown = canvasMouseEvent;
-    MouseOverlayRect = MouseOverlay.canvas.getBoundingClientRect();
 
     Canvas.canvas.onmouseup = MouseOverlay.canvas.onmouseup = canvasOnMouseUp;
 }

@@ -16,6 +16,17 @@
             top: 5px;
             left: 160px;
         }
+
+        .point {
+            left: 0px;
+            top: 0px;
+            background: transparent;
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            border: 1.5px solid rgb(0, 0, 0);
+        }
     </style>
 </head>
 
@@ -29,10 +40,11 @@
     <br />
     <div id="CanvasHolder"></div>
     <div id="MouseOverlay"></div>
-    
-    <div class="info">Press LMB to draw
+
+    <div id="InfoText" class="info">Press LMB to draw
         Shift + LMB to erase
     </div>
+    <div id="PointsContainter"></div>
 </body>
 
 </html>
