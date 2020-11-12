@@ -1,14 +1,14 @@
-import { Point } from './Point.js';
+import { Point } from './Figures.js';
 
 const wk = 0.7;
 const hk = 0.7
 
-export function GetCanvWidth(CanvasRect) {
-    return wk * window.outerWidth - CanvasRect.x;
+export function GetCanvWidth(Canvas) {
+    return wk * window.outerWidth - Canvas.canvas.style.left;
 }
 
-export function GetCanvHeight(CanvasRect) {
-    return hk * window.outerHeight - CanvasRect.y;
+export function GetCanvHeight(Canvas) {
+    return hk * window.outerHeight - Canvas.canvas.style.top;
 }
 
 /**
