@@ -9,14 +9,14 @@ var points = [];
 
 //#region Canvas
 var Canvas;
-var CanvasHolder = document.getElementById("CanvasHolder");
 var CanvasRect;
 //#endregion Canvas
 
 //#region MouseOverlay
 var MouseOverlay;
-var MouseOverlayRect;
-const Radius = 20;
+const minRadius = 20;
+const maxRadius = 150;
+var Radius = minRadius;
 //#endregion
 
 var PointCounter = document.getElementById("PointsCounter");
@@ -44,17 +44,25 @@ function UpdateCounter() {
     PointCounter.textContent = points.length;
 }
 
-function UpdateOverlayPosition(e) {
+function UpdateOverlay(e) {
+    if (e.shiftKey) {
+        MouseOverlay.canvas.style.display = 'block';
+    } else {
+        MouseOverlay.canvas.style.display = 'none';
+    }
     MouseOverlay.canvas.style.left = `${e.pageX - Radius}px`;
     MouseOverlay.canvas.style.top = `${e.pageY - Radius}px`;
+    MouseOverlay.canvas.style.borderRadius = `${1.5 * Radius}px`;
+    MouseOverlay.canvas.style.height = MouseOverlay.canvas.style.width = `${2 * Radius}px`;
 }
 
 let countMove = true;
 let moveTimer;
 let mouseMoveCounter = 0;
 let mouseMovePeriod = 3;
+let prevMousePos = new Point(0, 0);
 
-function canvasOnlick(e) {
+function canvasMouseEvent(e) {
     let isDown = e.type == 'mousedown';
     if (e.buttons || isDown) {
         let resume = true;
@@ -75,9 +83,13 @@ function canvasOnlick(e) {
             let x = (e.pageX + document.body.scrollLeft + Canvas.canvas.scrollLeft - Canvas.canvas.offsetLeft - parseInt(Canvas.canvas.style.borderWidth));
             let y = (e.pageY + document.body.scrollTop + Canvas.canvas.scrollTop - Canvas.canvas.offsetTop - parseInt(Canvas.canvas.style.borderWidth));
             let p = new Point(x, y);
-            if (!e.shiftKey && e.which == 1) {
+
+            if (!e.shiftKey) {
                 points.push(p);
             } else {
+                let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));
+                Radius = Math.min(maxRadius, Math.max(minRadius, dst));
+                UpdateOverlay(e);
                 for (let i = 0; i < points.length; i++) {
                     if (points[i].distance(p) <= Radius) {
                         points.splice(i, 1);
@@ -88,12 +100,9 @@ function canvasOnlick(e) {
 
             UpdateCounter();
             RedrawCanvas(Canvas, points);
-            if (e.shiftKey) {
-                MouseOverlay.canvas.style.display = 'block';
-                UpdateOverlayPosition(e);
-            }
         }
     }
+    prevMousePos = new Point(e.pageX, e.pageY);
 }
 
 function canvasOnMouseUp() {
@@ -115,7 +124,7 @@ function setup() {
     Canvas.canvas.style.border = "#000000";
     Canvas.canvas.style.borderStyle = "solid";
     Canvas.canvas.style.borderWidth = "3px";
-    Canvas.canvas.onmousemove = Canvas.canvas.onmousedown = canvasOnlick;
+    Canvas.canvas.onmousemove = Canvas.canvas.onmousedown = canvasMouseEvent;
 
     CanvasRect = Canvas.canvas.getBoundingClientRect();
 
@@ -123,7 +132,7 @@ function setup() {
 
     MouseOverlay = new p5(s, "MouseOverlay");
     MouseOverlay.canvas.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * Radius}px;width: ${2 * Radius}px;height: ${2 * Radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
-    MouseOverlay.canvas.onmousemove = MouseOverlay.canvas.onmousedown = canvasOnlick;
+    MouseOverlay.canvas.onmousemove = MouseOverlay.canvas.onmousedown = canvasMouseEvent;
     MouseOverlayRect = MouseOverlay.canvas.getBoundingClientRect();
 
     Canvas.canvas.onmouseup = MouseOverlay.canvas.onmouseup = canvasOnMouseUp;
@@ -142,11 +151,6 @@ window.onkeyup = function (e) {
 
 window.onmousemove = function (e) {
     if (typeof (MouseOverlay) != 'undefined') {
-        if (e.shiftKey) {
-            MouseOverlay.canvas.style.display = 'block';
-        } else {
-            MouseOverlay.canvas.style.display = 'none';
-        }
-        UpdateOverlayPosition(e);
+        UpdateOverlay(e);
     }
 }
