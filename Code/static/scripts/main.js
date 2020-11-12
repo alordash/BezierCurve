@@ -129,7 +129,7 @@ function canvasMouseEvent(e) {
                 let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));
                 Radius = Math.min(maxRadius, Math.max(minRadius, dst));
                 for (let i = 0; i < points.length; i++) {
-                    if (points[i].distance(p) <= Radius) {
+                    if (points[i].distance(p) <= Radius + w / 2) {
                         points[i].remove();
                         points.splice(i, 1);
                         i--;
