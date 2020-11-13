@@ -135,20 +135,13 @@ function canvasOnMouseUp(e) {
 function setup() {
     const s = p => { };
 
-    mainCanvas = new MainCanvas(null, new p5(s, "CanvasHolder"), 0.7, 0.7);
+    let canvas = new p5(s, "CanvasHolder");
+    mainCanvas = new MainCanvas(canvas.canvas, canvas, 0.7, 0.7);
     mainCanvas.element = mainCanvas.canvas.canvas;
 
-    mainCanvas.element.id = "MainCanvas";
-
-    mainCanvas.element.style.border = "#000000";
-    mainCanvas.element.style.borderStyle = "solid";
-    mainCanvas.element.style.borderWidth = "3px";
     mainCanvas.element.onmousemove = mainCanvas.element.onmousedown = canvasMouseEvent;
 
-    mainCanvas.resizeCanvas();
-
     mouseOverlay = new MouseOverlay(document.getElementById("MouseOverlay"), minRadius);
-    mouseOverlay.overlay.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * mouseOverlay.radius}px;width: ${2 * mouseOverlay.radius}px;height: ${2 * mouseOverlay.radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
     mouseOverlay.overlay.onmousemove = mouseOverlay.overlay.onmousedown = canvasMouseEvent;
 
     mainCanvas.element.onmouseup = mouseOverlay.overlay.onmouseup = canvasOnMouseUp;
