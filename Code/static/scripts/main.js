@@ -1,6 +1,8 @@
 "use strict";
-import { Point, Rectangle } from './Figures.js';
+import { Point } from './Figures/Point.js';
+import { Rectangle } from './Figures/Rectangle.js';
 import { GetCanvHeight, GetCanvWidth, RedrawCanvas } from './Drawing.js';
+import { MouseOverlay } from './MouseOverlay/MouseOverlay.js';
 
 /**
  * @type {Array.<Point>}
@@ -12,10 +14,10 @@ var Canvas;
 //#endregion Canvas
 
 //#region MouseOverlay
-var MouseOverlay;
+/**@type {MouseOverlay} */
+var mouseOverlay;
 const minRadius = 20;
 const maxRadius = 150;
-var Radius = minRadius;
 //#endregion
 
 //#region Points
@@ -29,6 +31,10 @@ var PointsContainter = document.getElementById("PointsContainter");
 
 var PointCounter = document.getElementById("PointsCounter");
 
+function UpdateCounter() {
+    PointCounter.textContent = points.length;
+}
+
 let ZeroPoint = document.getElementById("ZeroPoint");
 let PointStyle = getComputedStyle(ZeroPoint);
 ZeroPoint.style.display = 'none';
@@ -37,7 +43,7 @@ ZeroPoint.style.display = 'none';
 var ClearButton = document.getElementById("ClearButton");
 ClearButton.onclick = function () {
     ClearPoints();
-    UpdateCounter();
+    UpdateCounter(PointCounter, points);
     RedrawCanvas(Canvas, points);
 }
 
@@ -50,35 +56,7 @@ StartButton.onclick = function () {
     setup();
     Canvas.resizeCanvas(GetCanvWidth(Canvas), GetCanvHeight(Canvas));
     RedrawCanvas(Canvas, points);
-    UpdateCounter();
-}
-
-
-function UpdateCounter() {
-    PointCounter.textContent = points.length;
-}
-
-function UpdateOverlay(e) {
-    let x = e.pageX - Radius;
-    let y = e.pageY - Radius;
-
-    let p = new Point(x, y);
-    let CanvasRect = Canvas.canvas.getBoundingClientRect();
-    let r = new Rectangle(CanvasRect.x, CanvasRect.y, parseInt(Canvas.canvas.style.width), parseInt(Canvas.canvas.style.height));
-    if (e.shiftKey && p.isInRect(r)) {
-        MouseOverlay.canvas.style.display = 'block';
-    } else {
-        MouseOverlay.canvas.style.display = 'none';
-    }
-    if (e.buttons) {
-        MouseOverlay.canvas.style.backgroundColor = `rgba(255, 130, 120, 0.4)`;
-    } else {
-        MouseOverlay.canvas.style.background = 'transparent';
-    }
-    MouseOverlay.canvas.style.left = `${x}px`;
-    MouseOverlay.canvas.style.top = `${y}px`;
-    MouseOverlay.canvas.style.borderRadius = `${1.5 * Radius}px`;
-    MouseOverlay.canvas.style.height = MouseOverlay.canvas.style.width = `${2 * Radius}px`;
+    UpdateCounter(PointCounter, points);
 }
 
 let countMove = true;
@@ -127,9 +105,9 @@ function canvasMouseEvent(e) {
                 points.push(p);
             } else {
                 let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));
-                Radius = Math.min(maxRadius, Math.max(minRadius, dst));
+                mouseOverlay.radius = Math.min(maxRadius, Math.max(minRadius, dst));
                 for (let i = 0; i < points.length; i++) {
-                    if (points[i].distance(p) <= Radius + w / 2) {
+                    if (points[i].distance(p) <= mouseOverlay.radius + w / 2) {
                         points[i].remove();
                         points.splice(i, 1);
                         i--;
@@ -137,11 +115,11 @@ function canvasMouseEvent(e) {
                 }
             }
 
-            UpdateCounter();
+            UpdateCounter(PointCounter, points);
             RedrawCanvas(Canvas, points);
         }
     }
-    UpdateOverlay(e);
+    mouseOverlay.UpdateOverlay(e, Canvas);
     prevMousePos = new Point(e.pageX, e.pageY);
 }
 
@@ -151,7 +129,7 @@ function canvasOnMouseUp() {
 }
 
 function setup() {
-    const s = p => { }
+    const s = p => { };
 
     Canvas = new p5(s, "CanvasHolder");
 
@@ -165,11 +143,11 @@ function setup() {
 
     Canvas.resizeCanvas(GetCanvWidth(Canvas), GetCanvHeight(Canvas));
 
-    MouseOverlay = new p5(s, "MouseOverlay");
-    MouseOverlay.canvas.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * Radius}px;width: ${2 * Radius}px;height: ${2 * Radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
-    MouseOverlay.canvas.onmousemove = MouseOverlay.canvas.onmousedown = canvasMouseEvent;
+    mouseOverlay = new MouseOverlay(new p5(s, "MouseOverlay"), minRadius);
+    mouseOverlay.overlay.canvas.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * mouseOverlay.radius}px;width: ${2 * mouseOverlay.radius}px;height: ${2 * mouseOverlay.radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
+    mouseOverlay.overlay.canvas.onmousemove = mouseOverlay.overlay.canvas.onmousedown = canvasMouseEvent;
 
-    Canvas.canvas.onmouseup = MouseOverlay.canvas.onmouseup = canvasOnMouseUp;
+    Canvas.canvas.onmouseup = mouseOverlay.overlay.canvas.onmouseup = canvasOnMouseUp;
 }
 
 window.onresize = function () {
@@ -178,7 +156,7 @@ window.onresize = function () {
 }
 
 window.onkeyup = function (e) {
-    if (!e.shiftKey) {
-        MouseOverlay.canvas.style.display = 'none';
+    if (typeof(mouseOverlay) != 'undefined' && !e.shiftKey) {
+        mouseOverlay.overlay.canvas.style.display = 'none';
     }
 }

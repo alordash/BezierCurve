@@ -1,4 +1,4 @@
-import { Point } from './Figures.js';
+import { Point } from './Figures/Point.js';
 
 const wk = 0.7;
 const hk = 0.7
