@@ -9,7 +9,8 @@ export class MouseOverlay {
     constructor(overlay) {
         this.overlay = overlay;
         this.radius = this.minRadius;
-        this.overlay.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * this.radius}px;width: ${2 * this.radius}px;height: ${2 * this.radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
+        this.overlay.style.borderRadius = `${1.5 * this.radius}px`;
+        this.overlay.style.width = this.overlay.style.height = `${2 * this.radius}px`;
     }
 
     UpdateOverlay(e, canvasElement) {

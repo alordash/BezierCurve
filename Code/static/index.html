@@ -16,6 +16,16 @@
             top: 5px;
             left: 160px;
         }
+
+        .overlay {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            border: 1.5px solid rgb(0, 0, 0);
+            background: transparent;
+            position: absolute;
+            display: none;
+        }
     </style>
 </head>
 
@@ -33,7 +43,7 @@
     <div id="InfoText" class="info">Press LMB to draw
         Shift + LMB to erase
     </div>
-    <div id="MouseOverlay"></div>
+    <div id="MouseOverlay" class="overlay"></div>
 </body>
 
 </html>
