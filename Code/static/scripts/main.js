@@ -26,7 +26,6 @@ var mouseOverlay;
 //#region Points
 function ClearPoints() {
     while (typeof (points[0]) != 'undefined') {
-        points[0].destroy();
         points.splice(0, 1);
     }
 }
