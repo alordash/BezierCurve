@@ -9,13 +9,13 @@ export class MouseOverlay {
         this.radius = radius;
     }
 
-    UpdateOverlay(e, Canvas) {
+    UpdateOverlay(e, canvasElement) {
         let x = e.pageX - this.radius;
         let y = e.pageY - this.radius;
 
         let p = new Point(x, y);
-        let CanvasRect = Canvas.canvas.getBoundingClientRect();
-        let r = new Rectangle(CanvasRect.x, CanvasRect.y, parseInt(Canvas.canvas.style.width), parseInt(Canvas.canvas.style.height));
+        let CanvasRect = canvasElement.getBoundingClientRect();
+        let r = new Rectangle(CanvasRect.x, CanvasRect.y, parseInt(canvasElement.style.width), parseInt(canvasElement.style.height));
         if (e.shiftKey && p.isInRect(r)) {
             this.overlay.style.display = 'block';
         } else {

@@ -1,24 +1,5 @@
 import { Point } from './Figures/Point.js';
 
-const wk = 0.7;
-const hk = 0.7
-
-export function GetCanvWidth(Canvas) {
-    return wk * window.outerWidth - Canvas.canvas.style.left;
-}
-
-export function GetCanvHeight(Canvas) {
-    return hk * window.outerHeight - Canvas.canvas.style.top;
-}
-
-export function GetCanX(x, Canvas) {
-    return x + document.body.scrollLeft + Canvas.canvas.scrollLeft - Canvas.canvas.offsetLeft - parseInt(Canvas.canvas.style.borderWidth);
-}
-
-export function GetCanY(y, Canvas) {
-    return y + document.body.scrollTop + Canvas.canvas.scrollTop - Canvas.canvas.offsetTop - parseInt(Canvas.canvas.style.borderWidth);
-}
-
 /**
  * @param {Array.<Point>} points 
  */

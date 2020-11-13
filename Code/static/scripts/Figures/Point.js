@@ -15,7 +15,7 @@ export class Point {
         return r.x <= this.x && this.x <= r.x + r.w && r.y <= this.y && this.y <= r.y + r.h;
     }
 
-    remove() {
+    destroy() {
         this.element.parentElement.removeChild(this.element);
         delete this;
     }
