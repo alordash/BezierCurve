@@ -19,7 +19,7 @@ export class MouseOverlay {
         let p = new Point(x, y);
         let CanvasRect = canvasElement.getBoundingClientRect();
         let r = new Rectangle(CanvasRect.x, CanvasRect.y, parseInt(canvasElement.style.width), parseInt(canvasElement.style.height));
-        if (e.shiftKey && p.isInRect(r)) {
+        if (e[globalThis.EraseKey] && p.isInRect(r)) {
             this.overlay.style.display = 'block';
         } else {
             this.overlay.style.display = 'none';

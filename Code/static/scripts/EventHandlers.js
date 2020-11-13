@@ -12,7 +12,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
     if (e.buttons || isDown) {
         let resume = true;
         if (isDown) {
-            if (!e.shiftKey) {
+            if (!e[globalThis.EraseKey]) {
                 countMove = false;
                 moveTimer = setTimeout(() => {
                     countMove = true;
@@ -20,7 +20,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
             }
         } else {
             mouseMoveCounter = (mouseMoveCounter + 1) % mouseMovePeriod;
-            if (!countMove || (!e.shiftKey && mouseMoveCounter != 0)) {
+            if (!countMove || (!e[globalThis.EraseKey] && mouseMoveCounter != 0)) {
                 resume = false
             }
         }
@@ -34,7 +34,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
             let y = (e.pageY + document.body.scrollTop + mainCanvas.element.scrollTop - mainCanvas.element.offsetTop - cbw);
             let p = new Point(x, y);
 
-            if (!e.shiftKey) {
+            if (!e[globalThis.EraseKey]) {
                 points.push(p);
             } else {
                 let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));

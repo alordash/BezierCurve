@@ -5,6 +5,9 @@ import { MouseOverlay } from './MouseOverlay/MouseOverlay.js';
 import { MainCanvas } from './MainCanvas/MainCanvas.js';
 import { CanvasMouseEvent, CanvasOnMouseUp } from './EventHandlers.js';
 
+const EraseKey = "ctrlKey";
+globalThis.EraseKey = EraseKey;
+
 /**
  * @type {Array.<Point>}
  */
@@ -86,7 +89,7 @@ window.onresize = function () {
 }
 
 window.onkeyup = function (e) {
-    if (typeof (mouseOverlay) != 'undefined' && !e.shiftKey) {
+    if (typeof (mouseOverlay) != 'undefined' && !e[globalThis.EraseKey]) {
         mouseOverlay.overlay.style.display = 'none';
     }
 }
