@@ -4,9 +4,11 @@ import { Rectangle } from '../Figures/Rectangle.js';
 export class MouseOverlay {
     overlay;
     radius;
-    constructor(overlay, radius) {
+    minRadius = 20;
+    maxRadius = 150;
+    constructor(overlay) {
         this.overlay = overlay;
-        this.radius = radius;
+        this.radius = this.minRadius;
         this.overlay.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * this.radius}px;width: ${2 * this.radius}px;height: ${2 * this.radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
     }
 
