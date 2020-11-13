@@ -123,9 +123,10 @@ function canvasMouseEvent(e) {
     prevMousePos = new Point(e.pageX, e.pageY);
 }
 
-function canvasOnMouseUp() {
+function canvasOnMouseUp(e) {
     clearTimeout(moveTimer);
     countMove = true;
+    mouseOverlay.UpdateOverlay(e, Canvas);
 }
 
 function setup() {
