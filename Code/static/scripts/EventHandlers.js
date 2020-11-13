@@ -1,17 +1,11 @@
 import { Point } from './Figures/Point.js';
 import { Rectangle } from './Figures/Rectangle.js';
 
-let ZeroPoint = document.getElementById("ZeroPoint");
-let PointStyle = getComputedStyle(ZeroPoint);
-ZeroPoint.style.display = 'none';
-
 let countMove = true;
 let moveTimer;
 let mouseMoveCounter = 0;
 let mouseMovePeriod = 3;
 let prevMousePos = new Point(0, 0);
-
-var PointsContainter = document.getElementById("PointsContainter");
 
 export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
     let isDown = e.type == 'mousedown';
@@ -31,10 +25,8 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
             }
         }
         let CanvasRect = mainCanvas.element.getBoundingClientRect();
-        let w = parseInt(PointStyle.width);
-        let h = parseInt(PointStyle.height);
         let bw = parseInt(mainCanvas.element.style.borderWidth);
-        let r = new Rectangle(CanvasRect.x + w / 2 + bw, CanvasRect.y + h / 2 + bw, parseInt(mainCanvas.element.style.width) - w, parseInt(mainCanvas.element.style.height) - h);
+        let r = new Rectangle(CanvasRect.x / 2 + bw, CanvasRect.y / 2 + bw, parseInt(mainCanvas.element.style.width), parseInt(mainCanvas.element.style.height));
         let rawPoint = new Point(e.pageX, e.pageY);
         if (rawPoint.isInRect(r) && resume) {
             let cbw = parseInt(mainCanvas.element.style.borderWidth)
@@ -43,21 +35,12 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
             let p = new Point(x, y);
 
             if (!e.shiftKey) {
-                let pElement = document.createElement("div");
-                pElement.className = "point";
-                PointsContainter.appendChild(pElement);
-
-                pElement.style.left = `${e.pageX - parseInt(PointStyle.width) / 2}px`;
-                pElement.style.top = `${e.pageY - parseInt(PointStyle.height) / 2}px`;
-
-                p.element = pElement;
                 points.push(p);
             } else {
                 let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));
                 mouseOverlay.radius = Math.min(mouseOverlay.maxRadius, Math.max(mouseOverlay.minRadius, dst));
                 for (let i = 0; i < points.length; i++) {
                     if (points[i].distance(p) <= mouseOverlay.radius) {
-                        points[i].destroy();
                         points.splice(i, 1);
                         i--;
                     }
