@@ -144,11 +144,11 @@ function setup() {
 
     Canvas.resizeCanvas(GetCanvWidth(Canvas), GetCanvHeight(Canvas));
 
-    mouseOverlay = new MouseOverlay(new p5(s, "MouseOverlay"), minRadius);
-    mouseOverlay.overlay.canvas.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * mouseOverlay.radius}px;width: ${2 * mouseOverlay.radius}px;height: ${2 * mouseOverlay.radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
-    mouseOverlay.overlay.canvas.onmousemove = mouseOverlay.overlay.canvas.onmousedown = canvasMouseEvent;
+    mouseOverlay = new MouseOverlay(document.getElementById("MouseOverlay"), minRadius);
+    mouseOverlay.overlay.style = `border: 1.5px solid rgb(0, 0, 0);border-radius: ${1.5 * mouseOverlay.radius}px;width: ${2 * mouseOverlay.radius}px;height: ${2 * mouseOverlay.radius}px;background: transparent;position: absolute; top = 0px; left = 0px; display: none`;
+    mouseOverlay.overlay.onmousemove = mouseOverlay.overlay.onmousedown = canvasMouseEvent;
 
-    Canvas.canvas.onmouseup = mouseOverlay.overlay.canvas.onmouseup = canvasOnMouseUp;
+    Canvas.canvas.onmouseup = mouseOverlay.overlay.onmouseup = canvasOnMouseUp;
 }
 
 window.onresize = function () {
@@ -158,6 +158,6 @@ window.onresize = function () {
 
 window.onkeyup = function (e) {
     if (typeof(mouseOverlay) != 'undefined' && !e.shiftKey) {
-        mouseOverlay.overlay.canvas.style.display = 'none';
+        mouseOverlay.overlay.style.display = 'none';
     }
 }
