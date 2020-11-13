@@ -1,7 +1,6 @@
 export class Point {
     x;
     y;
-    element;
     constructor(x, y) {
         this.x = x;
         this.y = y;
