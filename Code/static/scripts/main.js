@@ -135,7 +135,6 @@ function setup() {
     Canvas = new p5(s, "CanvasHolder");
 
     Canvas.canvas.id = "MainCanvas";
-    Canvas.canvas = Canvas.canvas;
 
     Canvas.canvas.style.border = "#000000";
     Canvas.canvas.style.borderStyle = "solid";
