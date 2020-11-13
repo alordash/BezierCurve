@@ -1,6 +1,6 @@
 import { Point } from './Figures/Point.js';
 
-const PointSize = 20;
+export var PointSize = 20;
 
 /**
  * @param {Array.<Point>} points 
