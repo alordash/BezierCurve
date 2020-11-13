@@ -1,4 +1,3 @@
-"use strict";
 import { Point } from './Figures/Point.js';
 import { Rectangle } from './Figures/Rectangle.js';
 import { RedrawCanvas } from './Drawing.js';
