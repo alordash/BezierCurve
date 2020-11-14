@@ -56,6 +56,16 @@ StartButton.onclick = function () {
     UpdateCounter(PointCounter, points);
 }
 
+var RenderPointsCheckbox = document.getElementById("RenderPointsCheckbox");
+RenderPointsCheckbox.onchange = function () {
+    RedrawCanvas(mainCanvas.canvas, points);
+}
+
+var RenderCurvesCheckbox = document.getElementById("RenderCurvesCheckbox");
+RenderCurvesCheckbox.onchange = function () {
+    RedrawCanvas(mainCanvas.canvas, points);
+}
+
 function canvasMouseEvent(e) {
     CanvasMouseEvent(e, mainCanvas, mouseOverlay, points);
 
