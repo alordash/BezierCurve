@@ -25,7 +25,7 @@ export function RedrawCanvas(Canvas, points) {
     if (!RenderPoints) {
         size = 2;
     }
-    console.log('C :>> ', C);
+
     Canvas.background(225, 225, 255);
     DrawGrid(Canvas, GridStep);
     if (ManualMode) {
