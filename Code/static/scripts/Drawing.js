@@ -45,9 +45,8 @@ function DrawPoints(Canvas, points) {
     let length = points.length;
     for (let i = 0; i < length; i++) {
         let p = points[i];
-        let r = (i + 1) * 255 / length;
-        let g = 255 - r;
-        let pColor = Canvas.color(r, g, 0);
+        let b = 255 * (1 - (i + 1) / length);
+        let pColor = Canvas.color(b);
         Canvas.fill(pColor);
         Canvas.ellipse(p.x, p.y, PointSize, PointSize);
     }
