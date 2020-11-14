@@ -1,6 +1,6 @@
 import { Point } from './Figures/Point.js';
 import { Rectangle } from './Figures/Rectangle.js';
-import { PointSize } from './Drawing.js';
+import { PointSize, RedrawCanvas } from './Drawing.js';
 
 let countMove = true;
 let moveTimer;
@@ -14,6 +14,7 @@ let holdStartPoint;
 let holdPoint;
 
 export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
+    let shouldRedraw = false;
     let isDown = e.type == 'mousedown';
     let rawPoint = new Point(e.offsetX, e.offsetY);
     let x = (e.pageX + document.body.scrollLeft + mainCanvas.element.scrollLeft - mainCanvas.element.offsetLeft);
@@ -35,6 +36,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
         let d = new Point(e.pageX - holdStartPoint.x, e.pageY - holdStartPoint.y);
         points[holdingPointIndex].x = holdPoint.x + d.x;
         points[holdingPointIndex].y = holdPoint.y + d.y;
+        shouldRedraw = true;
     } else {
         if (e.buttons || isDown) {
             let resume = true;
@@ -57,6 +59,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
 
                 if (!e[globalThis.EraseKey]) {
                     points.push(p);
+                    shouldRedraw = true;
                 } else {
                     let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));
                     mouseOverlay.radius = Math.min(mouseOverlay.maxRadius, Math.max(mouseOverlay.minRadius, dst));
@@ -64,12 +67,16 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
                         if (points[i].distance(p) <= mouseOverlay.radius) {
                             points.splice(i, 1);
                             i--;
+                            shouldRedraw = true;
                         }
                     }
                 }
             }
         }
         mouseOverlay.UpdateOverlay(e, mainCanvas.element);
+    }
+    if (shouldRedraw) {
+        RedrawCanvas(mainCanvas.canvas, points);
     }
     prevMousePos = new Point(e.pageX, e.pageY);
 }

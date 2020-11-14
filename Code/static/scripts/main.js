@@ -60,7 +60,6 @@ function canvasMouseEvent(e) {
     CanvasMouseEvent(e, mainCanvas, mouseOverlay, points);
 
     UpdateCounter(PointCounter, points);
-    RedrawCanvas(mainCanvas.canvas, points);
 }
 
 function canvasOnMouseUp(e) {
