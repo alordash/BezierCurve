@@ -73,11 +73,13 @@ export function RedrawCanvas(Canvas, points) {
                 let p = newPoints[i][j];
                 if (p.isMain) {
                     Canvas.fill(180);
+                    Canvas.strokeWeight(2);
+                    Canvas.stroke(0);
                 } else {
                     Canvas.fill(180 * 1.3, 150);
+                    Canvas.strokeWeight(1);
+                    Canvas.stroke(0, 100);
                 }
-                Canvas.stroke(0, 100);
-                Canvas.strokeWeight(1);
                 Canvas.ellipse(p.x, p.y, p.size, p.size);
             }
         }
