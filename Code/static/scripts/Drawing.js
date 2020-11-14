@@ -48,8 +48,10 @@ export function RedrawCanvas(Canvas, points) {
                 if (ManualMode) {
                     point.isMain = false;
                 }
+            } else {
+                shouldAdd = false;
             }
-            if (ManualMode && !point.isMain) {
+            if (ManualMode && typeof (point) != 'undefined' && !point.isMain) {
                 if (!RenderCurves) {
                     shouldAdd = false;
                 }
