@@ -19,12 +19,47 @@ export function RedrawCanvas(Canvas, points) {
         DrawPoints(Canvas, points, size);
     }
     let count = points.length - 2;
+    let newPoints = [];
+    let point;
     for (let i = 2; i <= points.length; i++) {
+        newPoints[i - 2] = [];
         for (let j = 0; j <= points.length - i; j++) {
             if (i == points.length && j == 0) {
-                DrawBezierCurve(Canvas, points.slice(j, j + i), 4, 42, true);
+                point = DrawBezierCurve(Canvas, points.slice(j, j + i), 4, 42, true, ManualMode);
+                if (ManualMode) {
+                    point.isMain = true;
+                }
             } else if ((RenderPoints && i == 2) || RenderCurves) {
-                DrawBezierCurve(Canvas, points.slice(j, j + i), 2, 220 * (1.2 - (i - 2) / count), false);
+                point = DrawBezierCurve(Canvas, points.slice(j, j + i), 2, 220 * (1.2 - (i - 2) / count), false, ManualMode);
+                if (ManualMode) {
+                    point.isMain = false;
+                }
+            }
+            if (ManualMode) {
+                newPoints[i - 2].push(point);
+            }
+        }
+    }
+
+    if (ManualMode) {
+        for (let i = 0; i < newPoints.length; i++) {
+            count = newPoints[i].length - 2;
+            let step = 2;
+            let length = newPoints[i].length;
+            let maxLength = length - step;
+            for (let j = 0; j < length; j++) {
+                if (j <= maxLength) {
+                    DrawBezierCurve(Canvas, newPoints[i].slice(j, j + step), 2, 180, false, false);
+                }
+                let p = newPoints[i][j];
+                if (p.isMain) {
+                    Canvas.fill(180);
+                } else {
+                    Canvas.fill(1.3 * 180);
+                }
+                Canvas.stroke(0);
+                Canvas.strokeWeight(1);
+                Canvas.ellipse(p.x, p.y, p.size, p.size);
             }
         }
     }
@@ -34,11 +69,10 @@ export function RedrawCanvas(Canvas, points) {
     }
 }
 
-function DrawBezierCurve(Canvas, points, width, brightness, isMain) {
+function DrawBezierCurve(Canvas, points, width, brightness, isMain, ManualMode) {
     let length = points.length;
-    let ManualMode = document.getElementById("ManualModeCheckbox").checked;
     if (length > 1) {
-        if(ManualMode && !isMain) {
+        if (ManualMode && !isMain) {
             Canvas.strokeWeight(1.5);
             Canvas.stroke(brightness * 1.3, 150);
         } else {
@@ -57,7 +91,7 @@ function DrawBezierCurve(Canvas, points, width, brightness, isMain) {
         Canvas.endShape();
         if (ManualMode) {
             let size = 16;
-            if(isMain) {
+            if (isMain) {
                 Canvas.fill(brightness);
             } else {
                 size = 12;
@@ -71,7 +105,8 @@ function DrawBezierCurve(Canvas, points, width, brightness, isMain) {
             let d = maxVal - minVal;
             let t = (parseInt(ManualModeRange.value) - minVal) / d;
             let bp = GetPointOnBezier(t, points);
-            Canvas.ellipse(bp.x, bp.y, size, size);
+            bp.size = size;
+            return bp;
         }
     }
 }
