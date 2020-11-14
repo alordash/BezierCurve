@@ -30,18 +30,24 @@ export function RedrawCanvas(Canvas, points) {
     for (let i = 2; i <= points.length; i++) {
         newPoints[i - 2] = [];
         for (let j = 0; j <= points.length - i; j++) {
+            let shouldAdd = true;
             if (i == points.length && j == 0) {
                 point = DrawBezierCurve(Canvas, points.slice(j, j + i), 4, 42, true, ManualMode);
                 if (ManualMode) {
                     point.isMain = true;
                 }
-            } else if ((RenderPoints && i == 2) || RenderCurves) {
+            } else if ((RenderPoints && i == 2) || (RenderCurves)) {
                 point = DrawBezierCurve(Canvas, points.slice(j, j + i), 2, 220 * (1.2 - (i - 2) / count), false, ManualMode);
                 if (ManualMode) {
                     point.isMain = false;
                 }
             }
-            if (ManualMode) {
+            if(!point.isMain) {
+                if(!RenderCurves) {
+                    shouldAdd = false;
+                }
+            }
+            if (ManualMode && shouldAdd) {
                 newPoints[i - 2].push(point);
             }
         }
