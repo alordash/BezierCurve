@@ -2,6 +2,11 @@ import { Point } from './Figures/Point.js';
 import { GetPointOnBezier } from './BezierCurve/BezierCurve.js';
 
 export var PointSize = 20;
+export var GridStep = 75;
+
+export function Realign(val, step) {
+    return Math.round(val / step) * step;
+}
 
 /**
  * @param {Array.<Point>} points 
@@ -15,6 +20,7 @@ export function RedrawCanvas(Canvas, points) {
         size = 2;
     }
     Canvas.background(225, 225, 255);
+    DrawGrid(Canvas, GridStep);
     if (ManualMode) {
         DrawPoints(Canvas, points, size);
     }
@@ -55,9 +61,9 @@ export function RedrawCanvas(Canvas, points) {
                 if (p.isMain) {
                     Canvas.fill(180);
                 } else {
-                    Canvas.fill(1.3 * 180);
+                    Canvas.fill(1.3 * 180, 150);
                 }
-                Canvas.stroke(0);
+                Canvas.stroke(0, 100);
                 Canvas.strokeWeight(1);
                 Canvas.ellipse(p.x, p.y, p.size, p.size);
             }
@@ -66,6 +72,23 @@ export function RedrawCanvas(Canvas, points) {
     Canvas.strokeWeight(2);
     if (!ManualMode) {
         DrawPoints(Canvas, points, size);
+    }
+}
+
+function DrawGrid(Canvas, step) {
+    let x = 0;
+    let y = 0;
+    let w = Canvas.canvas.width;
+    let h = Canvas.canvas.height;
+    Canvas.stroke(100);
+    Canvas.strokeWeight(1.5);
+    while (x < w) {
+        Canvas.line(x, 0, x, h);
+        x += step;
+    }
+    while (y < h) {
+        Canvas.line(0, y, w, y);
+        y += step;
     }
 }
 
@@ -97,7 +120,7 @@ function DrawBezierCurve(Canvas, points, width, brightness, isMain, ManualMode) 
                 size = 12;
                 Canvas.fill(1.3 * brightness);
             }
-            Canvas.stroke(255);
+            Canvas.stroke(255, 200);
             Canvas.strokeWeight(1);
             let ManualModeRange = document.getElementById("ManualModeRange");
             let minVal = parseInt(ManualModeRange.min);

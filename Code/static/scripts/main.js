@@ -1,12 +1,14 @@
 import { Point } from './Figures/Point.js';
 import { Rectangle } from './Figures/Rectangle.js';
-import { RedrawCanvas } from './Drawing.js';
+import { GridStep, RedrawCanvas } from './Drawing.js';
 import { MouseOverlay } from './MouseOverlay/MouseOverlay.js';
 import { MainCanvas } from './MainCanvas/MainCanvas.js';
 import { CanvasMouseEvent, CanvasOnMouseUp } from './EventHandlers.js';
+import { KeyBindings } from './KeyBindings.js'
 
-const EraseKey = "ctrlKey";
-globalThis.EraseKey = EraseKey;
+for (const [key, value] of Object.entries(KeyBindings)) {
+    globalThis[key] = value;
+}
 
 /**
  * @type {Array.<Point>}
@@ -51,7 +53,7 @@ StartButton.onclick = function () {
     }
     ClearPoints();
     setup();
-    mainCanvas.resizeCanvas();
+    mainCanvas.resizeCanvas(GridStep);
     RedrawCanvas(mainCanvas.canvas, points);
     UpdateCounter(PointCounter, points);
 }
@@ -68,21 +70,65 @@ RenderPointsCheckbox.onchange = UpdateCanvas;
 var RenderCurvesCheckbox = document.getElementById("RenderCurvesCheckbox");
 RenderCurvesCheckbox.onchange = UpdateCanvas;
 
-var ManualModeCheckbox = document.getElementById("ManualModeCheckbox");
-ManualModeCheckbox.onchange = UpdateCanvas;
-
-
 var ManualModeRange = document.getElementById("ManualModeRange");
 ManualModeRange.onchange = UpdateCanvas;
 ManualModeRange.onmousemove = function (e) {
-    if(e.buttons) {
+    if (e.buttons) {
         UpdateCanvas();
     }
 };
 
-function canvasMouseEvent(e) {
-    CanvasMouseEvent(e, mainCanvas, mouseOverlay, points);
+var PlayTimer;
+var PlayStep = 30;
+var PlayButtonPressed = false;
+var PlayButton = document.getElementById("PlayButton");
+PlayButton.onclick = function () {
+    PlayButtonPressed = !PlayButtonPressed;
+    if (PlayButtonPressed) {
+        PlayButton.style.backgroundColor = "#d0451b";
+        PlayButton.textContent = "Stop";
+        PlayTimer = setInterval(() => {
+            let minVal = parseInt(ManualModeRange.min);
+            let maxVal = parseInt(ManualModeRange.max);
+            let v = parseInt(ManualModeRange.value) + PlayStep;
+            if (v > maxVal || v < minVal) {
+                v -= 2 * PlayStep;
+                PlayStep *= -1;
+            }
+            ManualModeRange.value = v;
+            if (ManualMode) {
+                UpdateCanvas();
+            }
+        }, 10);
+    } else {
+        PlayButton.style.backgroundColor = "#32d01b";
+        PlayButton.textContent = "Play";
+        clearInterval(PlayTimer);
+    }
+}
 
+var ManualModeCheckbox = document.getElementById("ManualModeCheckbox");
+var ManualMode = ManualModeCheckbox.checked;
+ManualModeCheckbox.onchange = function () {
+    ManualMode = ManualModeCheckbox.checked;
+    if (ManualMode) {
+        ManualModeRange.style.display = "inline-block";
+        PlayButton.style.display = "inline-block";
+    } else {
+        ManualModeRange.style.display = "none";
+        PlayButton.style.display = "none";
+        PlayButtonPressed = true;
+        PlayButton.onclick();
+        if (typeof (PlayTimer) != 'undefined') {
+            clearInterval(PlayTimer);
+        }
+    }
+    UpdateCanvas();
+}
+ManualModeCheckbox.onchange();
+
+function canvasMouseEvent(e) {
+    CanvasMouseEvent(e, mainCanvas, mouseOverlay, points, GridStep);
     UpdateCounter(PointCounter, points);
 }
 
@@ -107,7 +153,7 @@ function setup() {
 
 window.onresize = function () {
     if (typeof (mainCanvas) != 'undefined') {
-        mainCanvas.resizeCanvas();
+        mainCanvas.resizeCanvas(GridStep);
         RedrawCanvas(mainCanvas.canvas, points);
     }
 }

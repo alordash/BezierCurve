@@ -26,6 +26,24 @@
             position: absolute;
             display: none;
         }
+
+        .playButton {
+            border-radius: 3px;
+            border: 1px solid #942911;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Arial;
+            font-size: 13px;
+            padding: 2px 24px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #854629;
+        }
+
+        .playButton:active {
+            position: relative;
+            top: 1px;
+        }
     </style>
 </head>
 
@@ -35,22 +53,23 @@
     <br />
     <button id="StartButton">Start</button>
     <button id="ClearButton">Clear points</button>
-    <div style="position: absolute;left: 315px;top: 2px;">
+    <div style="position: absolute;left: 315px;top: 7px;">
         <input type="checkbox" id="RenderPointsCheckbox" checked="checked"> Render points
         <br>
         <input type="checkbox" id="RenderCurvesCheckbox"> Extra curves
     </div>
-    <div style="position: absolute;left: 445px;top: 2px;">
+    <div style="position: absolute;left: 445px;top: 7px;">
         <input id="ManualModeCheckbox" type="checkbox"> Manual mode
+        <a href="#" id="PlayButton" class="playButton" style="background-color: #32d01b;">Play</a>
         <div>
-            <input id="ManualModeRange" type="range" min="0" style="position: absolute; width: 200px" max="1000" step="1"
-                value="0.5">
+            <input id="ManualModeRange" type="range" min="0" style="position: absolute; width: 200px" max="10000"
+                step="1" value="0.5">
         </div>
     </div>
 
     <script type="module" src="./scripts/main.js"></script>
     <br />
-    <div id="CanvasHolder"></div>
+    <div id="CanvasHolder" style="padding-top: 10px;"></div>
 
     <div id="InfoText" class="info">Press LMB to draw
         Ctrl + LMB to erase

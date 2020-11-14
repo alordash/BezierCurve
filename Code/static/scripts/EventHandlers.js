@@ -1,6 +1,6 @@
 import { Point } from './Figures/Point.js';
 import { Rectangle } from './Figures/Rectangle.js';
-import { PointSize, RedrawCanvas } from './Drawing.js';
+import { Realign, PointSize, RedrawCanvas } from './Drawing.js';
 
 let countMove = true;
 let moveTimer;
@@ -13,7 +13,7 @@ let holdingPointIndex = -1;
 let holdStartPoint;
 let holdPoint;
 
-export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
+export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points, GridStep) {
     let shouldRedraw = false;
     let isDown = e.type == 'mousedown';
     let rawPoint = new Point(e.offsetX, e.offsetY);
@@ -36,6 +36,10 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
         let d = new Point(e.pageX - holdStartPoint.x, e.pageY - holdStartPoint.y);
         points[holdingPointIndex].x = holdPoint.x + d.x;
         points[holdingPointIndex].y = holdPoint.y + d.y;
+        if(e[globalThis.AllignKey]) {
+            points[holdingPointIndex].x = Realign(points[holdingPointIndex].x, GridStep);
+            points[holdingPointIndex].y = Realign(points[holdingPointIndex].y, GridStep);
+        }
         shouldRedraw = true;
     } else {
         if (e.buttons || isDown) {
@@ -58,6 +62,10 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
                 let p = new Point(x, y);
 
                 if (!e[globalThis.EraseKey]) {
+                    if(e[globalThis.AllignKey]) {
+                        p.x = Realign(p.x, GridStep);
+                        p.y = Realign(p.y, GridStep);
+                    }
                     points.push(p);
                     shouldRedraw = true;
                 } else {
