@@ -83,8 +83,10 @@ function setup() {
 }
 
 window.onresize = function () {
-    mainCanvas.resizeCanvas();
-    RedrawCanvas(mainCanvas.canvas, points);
+    if (typeof (mainCanvas) != 'undefined') {
+        mainCanvas.resizeCanvas();
+        RedrawCanvas(mainCanvas.canvas, points);
+    }
 }
 
 window.onkeyup = function (e) {
