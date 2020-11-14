@@ -1,6 +1,12 @@
 import { Point } from './Figures/Point.js';
 import { GetPointOnBezier } from './BezierCurve/BezierCurve.js';
 
+const C = {
+    r: 1 / 2,
+    g: 0,
+    b: 0
+}
+
 export var PointSize = 20;
 export var GridStep = 75;
 
@@ -19,6 +25,7 @@ export function RedrawCanvas(Canvas, points) {
     if (!RenderPoints) {
         size = 2;
     }
+    console.log('C :>> ', C);
     Canvas.background(225, 225, 255);
     DrawGrid(Canvas, GridStep);
     if (ManualMode) {
@@ -42,8 +49,8 @@ export function RedrawCanvas(Canvas, points) {
                     point.isMain = false;
                 }
             }
-            if(!point.isMain) {
-                if(!RenderCurves) {
+            if (!point.isMain) {
+                if (!RenderCurves) {
                     shouldAdd = false;
                 }
             }
@@ -67,7 +74,7 @@ export function RedrawCanvas(Canvas, points) {
                 if (p.isMain) {
                     Canvas.fill(180);
                 } else {
-                    Canvas.fill(1.3 * 180, 150);
+                    Canvas.fill(180 * 1.3, 150);
                 }
                 Canvas.stroke(0, 100);
                 Canvas.strokeWeight(1);
@@ -103,9 +110,11 @@ function DrawBezierCurve(Canvas, points, width, brightness, isMain, ManualMode) 
     if (length > 1) {
         if (ManualMode && !isMain) {
             Canvas.strokeWeight(1.5);
-            Canvas.stroke(brightness * 1.3, 150);
+            let v = brightness * 1.3;
+            Canvas.stroke(C.r * v, C.g * v, C.b * v, 150);
         } else {
-            Canvas.stroke(brightness);
+            let v = brightness;
+            Canvas.stroke(C.r * v, C.g * v, C.b * v);
         }
         Canvas.strokeWeight(width);
         Canvas.noFill();
@@ -121,12 +130,15 @@ function DrawBezierCurve(Canvas, points, width, brightness, isMain, ManualMode) 
         if (ManualMode) {
             let size = 16;
             if (isMain) {
-                Canvas.fill(brightness);
+                let v = brightness;
+                Canvas.fill(C.r * v, C.g * v, C.b * v);
             } else {
                 size = 12;
-                Canvas.fill(1.3 * brightness);
+                let v = brightness * 1.3;
+                Canvas.fill(C.r * v, C.g * v, C.b * v);
             }
-            Canvas.stroke(255, 200);
+            let v = 255;
+            Canvas.stroke(C.r * v, C.g * v, C.b * v, 200);
             Canvas.strokeWeight(1);
             let ManualModeRange = document.getElementById("ManualModeRange");
             let minVal = parseInt(ManualModeRange.min);
