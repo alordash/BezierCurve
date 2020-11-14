@@ -7,22 +7,29 @@ export var PointSize = 20;
  * @param {Array.<Point>} points 
  */
 export function RedrawCanvas(Canvas, points) {
+    let RenderPoints = document.getElementById("RenderPointsCheckbox").checked;
+    let RenderCurves = document.getElementById("RenderCurvesCheckbox").checked;
     Canvas.background(225, 225, 255);
     let count = points.length - 2;
     for (let i = 2; i <= points.length; i++) {
         for (let j = 0; j <= points.length - i; j++) {
-            if(i == points.length && j == 0) {
+            if (i == points.length && j == 0) {
                 Canvas.stroke(42);
-                Canvas.strokeWeight(3);
-            } else {
+                Canvas.strokeWeight(4);
+                DrawBezierCurve(Canvas, points.slice(j, j + i));
+            } else if (RenderCurves) {
                 Canvas.stroke(220 * (1.2 - (i - 2) / count));
                 Canvas.strokeWeight(2);
+                DrawBezierCurve(Canvas, points.slice(j, j + i));
             }
-            DrawBezierCurve(Canvas, points.slice(j, j + i));
         }
     }
     Canvas.strokeWeight(2);
-    DrawPoints(Canvas, points);
+    let size = PointSize;
+    if (!RenderPoints) {
+        size = 2;
+    }
+    DrawPoints(Canvas, points, size);
 }
 
 function DrawBezierCurve(Canvas, points) {
@@ -41,13 +48,13 @@ function DrawBezierCurve(Canvas, points) {
     }
 }
 
-function DrawPoints(Canvas, points) {
+function DrawPoints(Canvas, points, size) {
     let length = points.length;
     for (let i = 0; i < length; i++) {
         let p = points[i];
         let b = 255 * (1 - (i + 1) / length);
         let pColor = Canvas.color(b);
         Canvas.fill(pColor);
-        Canvas.ellipse(p.x, p.y, PointSize, PointSize);
+        Canvas.ellipse(p.x, p.y, size, size);
     }
 }
