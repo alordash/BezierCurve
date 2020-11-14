@@ -17,7 +17,7 @@ export function RedrawCanvas(Canvas, points) {
                 Canvas.stroke(42);
                 Canvas.strokeWeight(4);
                 DrawBezierCurve(Canvas, points.slice(j, j + i));
-            } else if (RenderCurves) {
+            } else if ((RenderPoints && i == 2) || RenderCurves) {
                 Canvas.stroke(220 * (1.2 - (i - 2) / count));
                 Canvas.strokeWeight(2);
                 DrawBezierCurve(Canvas, points.slice(j, j + i));
