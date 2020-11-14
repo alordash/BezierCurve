@@ -7,14 +7,13 @@
     <meta charset="utf-8" />
     <style>
         .info {
-            width: 150px;
+            width: 200px;
             background: rgb(255, 245, 206);
             padding: 2px;
             border: solid 1px black;
             float: left;
-            position: absolute;
-            top: 5px;
-            left: 160px;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         .overlay {
@@ -53,12 +52,12 @@
     <br />
     <button id="StartButton">Start</button>
     <button id="ClearButton">Clear points</button>
-    <div style="position: absolute;left: 315px;top: 7px;">
+    <div style="position: absolute;left: 160px;top: 7px;">
         <input type="checkbox" id="RenderPointsCheckbox" checked="checked"> Render points
         <br>
         <input type="checkbox" id="RenderCurvesCheckbox"> Extra curves
     </div>
-    <div style="position: absolute;left: 445px;top: 7px;">
+    <div style="position: absolute;left: 280px;top: 7px;">
         <input id="ManualModeCheckbox" type="checkbox"> Manual mode
         <a href="#" id="PlayButton" class="playButton" style="background-color: #32d01b;">Play</a>
         <div>
@@ -68,12 +67,16 @@
     </div>
 
     <script type="module" src="./scripts/main.js"></script>
-    <br />
+    <br>
+    <div id="InfoText" class="info">
+        1. Press LMB to draw
+        <br>
+        2. Ctrl + LMB to erase
+        <br>
+        3. Hold Shift to align to grid
+    </div>
     <div id="CanvasHolder" style="padding-top: 10px;"></div>
 
-    <div id="InfoText" class="info">Press LMB to draw
-        Ctrl + LMB to erase
-    </div>
     <div id="MouseOverlay" class="overlay"></div>
 </body>
 
