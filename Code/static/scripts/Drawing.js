@@ -8,7 +8,20 @@ export var PointSize = 20;
  */
 export function RedrawCanvas(Canvas, points) {
     Canvas.background(225, 225, 255);
-    DrawBezierCurve(Canvas, points);
+    let count = points.length - 2;
+    for (let i = 2; i <= points.length; i++) {
+        for (let j = 0; j <= points.length - i; j++) {
+            if(i == points.length && j == 0) {
+                Canvas.stroke(42);
+                Canvas.strokeWeight(3);
+            } else {
+                Canvas.stroke(220 * (1.2 - (i - 2) / count));
+                Canvas.strokeWeight(2);
+            }
+            DrawBezierCurve(Canvas, points.slice(j, j + i));
+        }
+    }
+    Canvas.strokeWeight(2);
     DrawPoints(Canvas, points);
 }
 
@@ -16,8 +29,6 @@ function DrawBezierCurve(Canvas, points) {
     let length = points.length;
     if (length > 1) {
         Canvas.noFill();
-        Canvas.strokeWeight(2);
-        Canvas.stroke(42);
         Canvas.beginShape();
         Canvas.curveVertex(points[0].x, points[0].y);
         for (let t = 0; t <= 1; t += 0.005) {
@@ -32,12 +43,10 @@ function DrawBezierCurve(Canvas, points) {
 
 function DrawPoints(Canvas, points) {
     let length = points.length;
-    Canvas.strokeWeight(2);
     for (let i = 0; i < length; i++) {
         let p = points[i];
         let r = (i + 1) * 255 / length;
         let g = 255 - r;
-        //points[i].element.style.background = `rgb(${r}, ${g}, 0)`;
         let pColor = Canvas.color(r, g, 0);
         Canvas.fill(pColor);
         Canvas.ellipse(p.x, p.y, PointSize, PointSize);
