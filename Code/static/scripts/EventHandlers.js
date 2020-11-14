@@ -62,6 +62,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points) {
                     shouldRedraw = true;
                 } else {
                     let dst = prevMousePos.distance(new Point(e.pageX, e.pageY));
+                    mouseOverlay.maxRadius = parseInt(mainCanvas.element.style.width) * parseInt(mainCanvas.element.style.height) / 6400;
                     mouseOverlay.radius = Math.min(mouseOverlay.maxRadius, Math.max(mouseOverlay.minRadius, dst));
                     for (let i = 0; i < points.length; i++) {
                         if (points[i].distance(p) <= mouseOverlay.radius) {
