@@ -56,15 +56,29 @@ StartButton.onclick = function () {
     UpdateCounter(PointCounter, points);
 }
 
-var RenderPointsCheckbox = document.getElementById("RenderPointsCheckbox");
-RenderPointsCheckbox.onchange = function () {
-    RedrawCanvas(mainCanvas.canvas, points);
+function UpdateCanvas() {
+    if (typeof (mainCanvas) != 'undefined') {
+        RedrawCanvas(mainCanvas.canvas, points);
+    }
 }
 
+var RenderPointsCheckbox = document.getElementById("RenderPointsCheckbox");
+RenderPointsCheckbox.onchange = UpdateCanvas;
+
 var RenderCurvesCheckbox = document.getElementById("RenderCurvesCheckbox");
-RenderCurvesCheckbox.onchange = function () {
-    RedrawCanvas(mainCanvas.canvas, points);
-}
+RenderCurvesCheckbox.onchange = UpdateCanvas;
+
+var ManualModeCheckbox = document.getElementById("ManualModeCheckbox");
+ManualModeCheckbox.onchange = UpdateCanvas;
+
+
+var ManualModeRange = document.getElementById("ManualModeRange");
+ManualModeRange.onchange = UpdateCanvas;
+ManualModeRange.onmousemove = function (e) {
+    if(e.buttons) {
+        UpdateCanvas();
+    }
+};
 
 function canvasMouseEvent(e) {
     CanvasMouseEvent(e, mainCanvas, mouseOverlay, points);
