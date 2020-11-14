@@ -49,7 +49,7 @@ export function RedrawCanvas(Canvas, points) {
                     point.isMain = false;
                 }
             }
-            if (!point.isMain) {
+            if (ManualMode && !point.isMain) {
                 if (!RenderCurves) {
                     shouldAdd = false;
                 }
@@ -110,8 +110,10 @@ function DrawBezierCurve(Canvas, points, width, brightness, isMain, ManualMode) 
     if (length > 1) {
         if (ManualMode && !isMain) {
             Canvas.strokeWeight(1.5);
+        }
+        if (!isMain) {
             let v = brightness * 1.3;
-            Canvas.stroke(C.r * v, C.g * v, C.b * v, 150);
+            Canvas.stroke(C.r * v, C.g * v, C.b * v, 120);
         } else {
             let v = brightness;
             Canvas.stroke(C.r * v, C.g * v, C.b * v);
