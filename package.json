@@ -1,0 +1,23 @@
+{
+  "name": "beziercurve",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "npm install --prefix Code"
+  },
+  "engines": {
+    "node": "13.12.x",
+    "npm": "6.14.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alordash/BezierCurve.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alordash/BezierCurve/issues"
+  },
+  "homepage": "https://github.com/alordash/BezierCurve#readme"
+}
