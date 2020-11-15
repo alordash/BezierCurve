@@ -22,13 +22,7 @@ const BezierStep = 0.005;
 export function RedrawCanvas(Canvas, points) {
     let RenderPoints = document.getElementById("RenderPointsCheckbox").checked;
     let RenderCurves = document.getElementById("RenderCurvesCheckbox").checked;
-
     let ManualMode = document.getElementById("ManualModeCheckbox").checked;
-    let ManualModeRange = document.getElementById("ManualModeRange");
-    let minVal = parseInt(ManualModeRange.min);
-    let maxVal = parseInt(ManualModeRange.max);
-    let d = maxVal - minVal;
-    let t = (parseInt(ManualModeRange.value) - minVal) / d;
 
     let size = PointSize;
     if (!RenderPoints) {
@@ -41,44 +35,9 @@ export function RedrawCanvas(Canvas, points) {
         DrawPoints(Canvas, points, size);
     }
     let allBezierPointsArr = GetBezierPoints(points);
-    let allLength = allBezierPointsArr.length;
-    if (allLength > 0) {
-        let layerCount = allBezierPointsArr[0].length;
-        if (layerCount) {
-            for (let i = 0; i < layerCount; i++) {
-                let count = allBezierPointsArr[0][i].length;
-                for (let j = 0; j < count; j++) {
-                    Canvas.strokeWeight(2);
-                    Canvas.noFill();
-                    Canvas.beginShape();
-                    for (let k = 0; k < allLength; k++) {
-                        let p = allBezierPointsArr[k][i][j];
-                        Canvas.curveVertex(p.x, p.y);
-                    }
-                    Canvas.endShape();
-                }
-            }
-        }
-    }
-    
-    let index = Math.round(t / BezierStep);
-    let bPointsArr = allBezierPointsArr[index];
-    if (typeof (bPointsArr) != 'undefined') {
-        let length = bPointsArr.length;
-        for (let i = 0; i < length; i++) {
-            let bPoints = bPointsArr[i];
-            let inLength = bPoints.length;
-            for (let j = 0; j < inLength; j++) {
-                let point = bPoints[j];
-                Canvas.ellipse(point.x, point.y, 5, 5);
-            }
-            for (let j = 0; j < inLength - 1; j++) {
-                let p0 = bPoints[j];
-                let p1 = bPoints[j + 1];
-                Canvas.line(p0.x, p0.y, p1.x, p1.y);
-            }
-        }
-    }
+    DrawManualCurves(Canvas, allBezierPointsArr, 2);
+    DrawCurves(Canvas, allBezierPointsArr, 1.5, RenderCurves, ManualMode);
+
     Canvas.strokeWeight(2);
     if (!ManualMode) {
         DrawPoints(Canvas, points, size);
@@ -102,20 +61,65 @@ function DrawGrid(Canvas, step) {
     }
 }
 
-function DrawCurve(Canvas, points, width) {
-    let length = points.length;
-    if (length > 1) {
-        Canvas.strokeWeight(width);
-        Canvas.noFill();
-        Canvas.beginShape();
-        Canvas.curveVertex(points[0].x, points[0].y);
-        for (let t = 0; t <= 1; t += 0.005) {
-            let bp = GetPointsOnBezier(t, points);
-            Canvas.curveVertex(bp.x, bp.y);
+function DrawCurves(Canvas, points, width, RenderCurves, ManualMode) {
+    let allLength = points.length;
+    Canvas.stroke(0);
+    Canvas.strokeWeight(width);
+    let j = 0;
+    if (allLength > 0) {
+        let layerCount = points[0].length;
+        if (layerCount) {
+            if(!RenderCurves) {
+                layerCount = 1;
+            }
+            for (let i = 0; i < layerCount; i++) {
+                let count = points[0][i].length;
+                if (!RenderCurves && !ManualMode) {
+                    j = count - 1;
+                } else {
+                    j = 0;
+                }
+                for (; j < count; j++) {
+                    Canvas.noFill();
+                    Canvas.beginShape();
+                    for (let k = 0; k < allLength; k++) {
+                        let p = points[k][i][j];
+                        Canvas.curveVertex(p.x, p.y);
+                    }
+                    Canvas.endShape();
+                }
+            }
         }
-        Canvas.curveVertex(points[length - 1].x, points[length - 1].y);
-        Canvas.curveVertex(points[length - 1].x, points[length - 1].y);
-        Canvas.endShape();
+    }
+}
+
+function DrawManualCurves(Canvas, points, width) {
+    let ManualModeRange = document.getElementById("ManualModeRange");
+    let minVal = parseInt(ManualModeRange.min);
+    let maxVal = parseInt(ManualModeRange.max);
+    let d = maxVal - minVal;
+    let t = (parseInt(ManualModeRange.value) - minVal) / d;
+
+    let index = Math.round(t / BezierStep);
+    let bPointsArr = points[index];
+
+    Canvas.stroke(140);
+    Canvas.strokeWeight(width);
+    if (typeof (bPointsArr) != 'undefined') {
+        let length = bPointsArr.length;
+        for (let i = 0; i < length; i++) {
+            let bPoints = bPointsArr[i];
+            let inLength = bPoints.length;
+            for (let j = 0; j < inLength; j++) {
+                let point = bPoints[j];
+                Canvas.ellipse(point.x, point.y, 5, 5);
+            }
+            for (let j = 0; j < inLength - 1; j++) {
+                let p0 = bPoints[j];
+                let p1 = bPoints[j + 1];
+                Canvas.line(p0.x, p0.y, p1.x, p1.y);
+            }
+        }
     }
 }
 
@@ -128,55 +132,6 @@ function GetBezierPoints(points) {
     }
     newPoints[newPoints.length] = GetPointsOnBezier(1, points);
     return newPoints;
-}
-
-function DrawBezierCurve(Canvas, points, width, brightness, isMain, ManualMode) {
-    let length = points.length;
-    if (length > 1) {
-        if (ManualMode && !isMain) {
-            Canvas.strokeWeight(1.5);
-        }
-        if (!isMain) {
-            let v = brightness * 1.3;
-            Canvas.stroke(C.r * v, C.g * v, C.b * v, 120);
-        } else {
-            let v = brightness;
-            Canvas.stroke(C.r * v, C.g * v, C.b * v);
-        }
-        Canvas.strokeWeight(width);
-        Canvas.noFill();
-        Canvas.beginShape();
-        Canvas.curveVertex(points[0].x, points[0].y);
-        for (let t = 0; t <= 1; t += 0.005) {
-            let bp = GetPointsOnBezier(t, points);
-            Canvas.curveVertex(bp.x, bp.y);
-        }
-        Canvas.curveVertex(points[length - 1].x, points[length - 1].y);
-        Canvas.curveVertex(points[length - 1].x, points[length - 1].y);
-        Canvas.endShape();
-        if (ManualMode) {
-            let size = 16;
-            if (isMain) {
-                let v = brightness;
-                Canvas.fill(C.r * v, C.g * v, C.b * v);
-            } else {
-                size = 12;
-                let v = brightness * 1.3;
-                Canvas.fill(C.r * v, C.g * v, C.b * v);
-            }
-            let v = 255;
-            Canvas.stroke(C.r * v, C.g * v, C.b * v, 200);
-            Canvas.strokeWeight(1);
-            let ManualModeRange = document.getElementById("ManualModeRange");
-            let minVal = parseInt(ManualModeRange.min);
-            let maxVal = parseInt(ManualModeRange.max);
-            let d = maxVal - minVal;
-            let t = (parseInt(ManualModeRange.value) - minVal) / d;
-            let bp = GetPointsOnBezier(t, points);
-            bp.size = size;
-            return bp;
-        }
-    }
 }
 
 function DrawPoints(Canvas, points, size) {
