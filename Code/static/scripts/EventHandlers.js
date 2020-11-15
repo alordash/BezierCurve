@@ -36,7 +36,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points, GridStep) 
         let d = new Point(e.pageX - holdStartPoint.x, e.pageY - holdStartPoint.y);
         points[holdingPointIndex].x = holdPoint.x + d.x;
         points[holdingPointIndex].y = holdPoint.y + d.y;
-        if(e[globalThis.AllignKey]) {
+        if(!e[globalThis.AllignKey]) {
             points[holdingPointIndex].x = Realign(points[holdingPointIndex].x, GridStep);
             points[holdingPointIndex].y = Realign(points[holdingPointIndex].y, GridStep);
         }
@@ -62,7 +62,7 @@ export function CanvasMouseEvent(e, mainCanvas, mouseOverlay, points, GridStep) 
                 let p = new Point(x, y);
 
                 if (!e[globalThis.EraseKey]) {
-                    if(e[globalThis.AllignKey]) {
+                    if(!e[globalThis.AllignKey]) {
                         p.x = Realign(p.x, GridStep);
                         p.y = Realign(p.y, GridStep);
                     }
