@@ -42,24 +42,25 @@ export function RedrawCanvas(Canvas, points) {
     }
     let allBezierPointsArr = GetBezierPoints(points);
     let allLength = allBezierPointsArr.length;
-    for (let k = 0; k < allLength; k++) {
-        let bPointsArr = allBezierPointsArr[k];
-        let length = bPointsArr.length;
-        if (k < allLength - 1) {
-            let bPA0 = bPointsArr;
-            let bPA1 = allBezierPointsArr[k + 1];
-            for (let i = 0; i < length; i++) {
-                let bP0 = bPA0[i];
-                let bP1 = bPA1[i];
-                let inLength = bP0.length;
-                for (let j = 0; j < inLength; j++) {
-                    let p0 = bP0[j];
-                    let p1 = bP1[j];
-                    Canvas.line(p0.x, p0.y, p1.x, p1.y);
+    if (allLength > 0) {
+        let layerCount = allBezierPointsArr[0].length;
+        if (layerCount) {
+            for (let i = 0; i < layerCount; i++) {
+                let count = allBezierPointsArr[0][i].length;
+                for (let j = 0; j < count; j++) {
+                    Canvas.strokeWeight(2);
+                    Canvas.noFill();
+                    Canvas.beginShape();
+                    for (let k = 0; k < allLength; k++) {
+                        let p = allBezierPointsArr[k][i][j];
+                        Canvas.curveVertex(p.x, p.y);
+                    }
+                    Canvas.endShape();
                 }
             }
         }
     }
+    
     let index = Math.round(t / BezierStep);
     let bPointsArr = allBezierPointsArr[index];
     if (typeof (bPointsArr) != 'undefined') {
@@ -78,63 +79,6 @@ export function RedrawCanvas(Canvas, points) {
             }
         }
     }
-
-    /*
-    let count = points.length - 2;
-    let newPoints = [];
-    let point;
-    for (let i = 2; i <= points.length; i++) {
-        newPoints[i - 2] = [];
-        for (let j = 0; j <= points.length - i; j++) {
-            let shouldAdd = true;
-            if (i == points.length && j == 0) {
-                point = DrawBezierCurve(Canvas, points.slice(j, j + i), 4, 42, true, ManualMode);
-                if (ManualMode) {
-                    point.isMain = true;
-                }
-            } else if ((RenderPoints && i == 2) || (RenderCurves)) {
-                point = DrawBezierCurve(Canvas, points.slice(j, j + i), 2, 220 * (1.2 - (i - 2) / count), false, ManualMode);
-                if (ManualMode) {
-                    point.isMain = false;
-                }
-            } else {
-                shouldAdd = false;
-            }
-            if (ManualMode && typeof (point) != 'undefined' && !point.isMain) {
-                if (!RenderCurves) {
-                    shouldAdd = false;
-                }
-            }
-            if (ManualMode && shouldAdd) {
-                newPoints[i - 2].push(point);
-            }
-        }
-    }
-
-    if (ManualMode) {
-        for (let i = 0; i < newPoints.length; i++) {
-            count = newPoints[i].length - 2;
-            let step = 2;
-            let length = newPoints[i].length;
-            let maxLength = length - step;
-            for (let j = 0; j < length; j++) {
-                if (j <= maxLength) {
-                    DrawBezierCurve(Canvas, newPoints[i].slice(j, j + step), 2, 180, false, false);
-                }
-                let p = newPoints[i][j];
-                if (p.isMain) {
-                    Canvas.fill(180);
-                    Canvas.strokeWeight(2);
-                    Canvas.stroke(0);
-                } else {
-                    Canvas.fill(180 * 1.3, 150);
-                    Canvas.strokeWeight(1);
-                    Canvas.stroke(0, 100);
-                }
-                Canvas.ellipse(p.x, p.y, p.size, p.size);
-            }
-        }
-    }*/
     Canvas.strokeWeight(2);
     if (!ManualMode) {
         DrawPoints(Canvas, points, size);
@@ -177,11 +121,7 @@ function DrawCurve(Canvas, points, width) {
 
 /**@returns {Array.<Array.<Array.<Point>>>} */
 function GetBezierPoints(points) {
-
     let newPoints = [];
-    /*    let bp = GetPointsOnBezier(t, points);
-        newPoints[0] = bp;*/
-
     for (let t = 0, i = 0; t < 1; t += BezierStep, i++) {
         let bp = GetPointsOnBezier(t, points);
         newPoints[i] = bp;
