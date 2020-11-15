@@ -38,7 +38,7 @@ export function RedrawCanvas(Canvas, points) {
     if (ManualMode) {
         DrawManualCurves(Canvas, allBezierPointsArr, 2);
     }
-    DrawCurves(Canvas, allBezierPointsArr, points, 1.5, RenderCurves, ManualMode);
+    DrawCurves(Canvas, allBezierPointsArr, 1.5, RenderCurves, ManualMode);
 
     Canvas.strokeWeight(2);
     if (!ManualMode) {
@@ -63,22 +63,24 @@ function DrawGrid(Canvas, step) {
     }
 }
 
-function DrawCurves(Canvas, points, originalPoints, width, RenderCurves, ManualMode) {
+function DrawCurves(Canvas, points, width, RenderCurves, ManualMode) {
     let allLength = points.length;
     Canvas.stroke(0);
     Canvas.strokeWeight(width);
+    let i = 0;
     let j = 0;
     if (allLength > 0) {
         let layerCount = points[0].length;
         if (layerCount) {
-            if (!RenderCurves) {
+            if (!RenderCurves && !ManualMode) {
                 layerCount = 1;
             }
-            for (let i = 0; i < layerCount; i++) {
+            for (; i < layerCount; i++) {
+                if (i > 0 && ManualMode && !RenderCurves && i != layerCount - 1) {
+                    i = layerCount - 1;
+                }
                 let count = points[0][i].length;
-                if (!RenderCurves && ManualMode) {
-                    j = 2;
-                } else if (!RenderCurves) {
+                if (!RenderCurves && !ManualMode) {
                     j = count - 1;
                 } else {
                     j = 0;
