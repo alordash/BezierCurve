@@ -35,10 +35,10 @@ export function RedrawCanvas(Canvas, points) {
         DrawPoints(Canvas, points, size);
     }
     let allBezierPointsArr = GetBezierPoints(points);
+    DrawCurves(Canvas, allBezierPointsArr, 1.5, RenderCurves, ManualMode);
     if (ManualMode) {
         DrawManualCurves(Canvas, allBezierPointsArr, 2);
     }
-    DrawCurves(Canvas, allBezierPointsArr, 1.5, RenderCurves, ManualMode);
 
     Canvas.strokeWeight(2);
     if (!ManualMode) {
@@ -116,14 +116,14 @@ function DrawManualCurves(Canvas, points, width) {
         for (let i = 0; i < length; i++) {
             let bPoints = bPointsArr[i];
             let inLength = bPoints.length;
-            for (let j = 0; j < inLength; j++) {
-                let point = bPoints[j];
-                Canvas.ellipse(point.x, point.y, 5, 5);
-            }
             for (let j = 0; j < inLength - 1; j++) {
                 let p0 = bPoints[j];
                 let p1 = bPoints[j + 1];
                 Canvas.line(p0.x, p0.y, p1.x, p1.y);
+            }
+            for (let j = 0; j < inLength; j++) {
+                let point = bPoints[j];
+                Canvas.ellipse(point.x, point.y, 5, 5);
             }
         }
     }
