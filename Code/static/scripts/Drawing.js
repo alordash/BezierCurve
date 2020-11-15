@@ -122,21 +122,36 @@ function DrawManualCurves(Canvas, points, width) {
     let index = Math.round(t / BezierStep);
     let bPointsArr = points[index];
 
-    Canvas.stroke(140);
     Canvas.strokeWeight(width);
     if (typeof (bPointsArr) != 'undefined') {
         let length = bPointsArr.length;
         for (let i = 0; i < length; i++) {
             let bPoints = bPointsArr[i];
             let inLength = bPoints.length;
+            Canvas.stroke(ApplyColor(Canvas, 200, 120));
             for (let j = 0; j < inLength - 1; j++) {
                 let p0 = bPoints[j];
                 let p1 = bPoints[j + 1];
                 Canvas.line(p0.x, p0.y, p1.x, p1.y);
             }
+        }
+        for (let i = 0; i < length; i++) {
+            let bPoints = bPointsArr[i];
+            let inLength = bPoints.length;
             for (let j = 0; j < inLength; j++) {
                 let point = bPoints[j];
-                Canvas.ellipse(point.x, point.y, 5, 5);
+                let size = 8;
+                if (i == 0) {
+                    Canvas.fill(180);
+                    Canvas.strokeWeight(1.5);
+                    Canvas.stroke(0);
+                    size = 14;
+                } else {
+                    Canvas.fill(180 * 1.3, 150);
+                    Canvas.strokeWeight(1);
+                    Canvas.stroke(0, 100);
+                }
+                Canvas.ellipse(point.x, point.y, size, size);
             }
         }
     }
