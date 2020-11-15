@@ -35,8 +35,10 @@ export function RedrawCanvas(Canvas, points) {
         DrawPoints(Canvas, points, size);
     }
     let allBezierPointsArr = GetBezierPoints(points);
-    DrawManualCurves(Canvas, allBezierPointsArr, 2);
-    DrawCurves(Canvas, allBezierPointsArr, 1.5, RenderCurves, ManualMode);
+    if (ManualMode) {
+        DrawManualCurves(Canvas, allBezierPointsArr, 2);
+    }
+    DrawCurves(Canvas, allBezierPointsArr, points, 1.5, RenderCurves, ManualMode);
 
     Canvas.strokeWeight(2);
     if (!ManualMode) {
@@ -61,7 +63,7 @@ function DrawGrid(Canvas, step) {
     }
 }
 
-function DrawCurves(Canvas, points, width, RenderCurves, ManualMode) {
+function DrawCurves(Canvas, points, originalPoints, width, RenderCurves, ManualMode) {
     let allLength = points.length;
     Canvas.stroke(0);
     Canvas.strokeWeight(width);
@@ -69,12 +71,14 @@ function DrawCurves(Canvas, points, width, RenderCurves, ManualMode) {
     if (allLength > 0) {
         let layerCount = points[0].length;
         if (layerCount) {
-            if(!RenderCurves) {
+            if (!RenderCurves) {
                 layerCount = 1;
             }
             for (let i = 0; i < layerCount; i++) {
                 let count = points[0][i].length;
-                if (!RenderCurves && !ManualMode) {
+                if (!RenderCurves && ManualMode) {
+                    j = 2;
+                } else if (!RenderCurves) {
                     j = count - 1;
                 } else {
                     j = 0;
@@ -126,7 +130,7 @@ function DrawManualCurves(Canvas, points, width) {
 /**@returns {Array.<Array.<Array.<Point>>>} */
 function GetBezierPoints(points) {
     let newPoints = [];
-    for (let t = 0, i = 0; t < 1; t += BezierStep, i++) {
+    for (let t = 0, i = 0; t <= 1; t += BezierStep, i++) {
         let bp = GetPointsOnBezier(t, points);
         newPoints[i] = bp;
     }
