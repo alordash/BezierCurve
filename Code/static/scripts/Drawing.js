@@ -88,10 +88,14 @@ function DrawCurves(Canvas, points, width, RenderCurves, ManualMode) {
                 for (; j < count; j++) {
                     Canvas.noFill();
                     Canvas.beginShape();
+                    let p0 = points[0][i][j];
+                    Canvas.curveVertex(p0.x, p0.y);
                     for (let k = 0; k < allLength; k++) {
                         let p = points[k][i][j];
                         Canvas.curveVertex(p.x, p.y);
                     }
+                    p0 = points[allLength - 1][i][j];
+                    Canvas.curveVertex(p0.x, p0.y);
                     Canvas.endShape();
                 }
             }
@@ -132,9 +136,9 @@ function DrawManualCurves(Canvas, points, width) {
 /**@returns {Array.<Array.<Array.<Point>>>} */
 function GetBezierPoints(points) {
     let newPoints = [];
-    for (let t = 0, i = 0; t <= 1; t += BezierStep, i++) {
+    for (let t = 0; t <= 1; t += BezierStep) {
         let bp = GetPointsOnBezier(t, points);
-        newPoints[i] = bp;
+        newPoints.push(bp);
     }
     newPoints[newPoints.length] = GetPointsOnBezier(1, points);
     return newPoints;
