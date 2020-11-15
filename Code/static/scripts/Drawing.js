@@ -14,7 +14,7 @@ export function Realign(val, step) {
     return Math.round(val / step) * step;
 }
 
-const BezierStep = 0.1;
+const BezierStep = 0.005;
 
 /**
  * @param {Array.<Point>} points 
@@ -22,7 +22,14 @@ const BezierStep = 0.1;
 export function RedrawCanvas(Canvas, points) {
     let RenderPoints = document.getElementById("RenderPointsCheckbox").checked;
     let RenderCurves = document.getElementById("RenderCurvesCheckbox").checked;
+
     let ManualMode = document.getElementById("ManualModeCheckbox").checked;
+    let ManualModeRange = document.getElementById("ManualModeRange");
+    let minVal = parseInt(ManualModeRange.min);
+    let maxVal = parseInt(ManualModeRange.max);
+    let d = maxVal - minVal;
+    let t = (parseInt(ManualModeRange.value) - minVal) / d;
+
     let size = PointSize;
     if (!RenderPoints) {
         size = 2;
@@ -38,20 +45,40 @@ export function RedrawCanvas(Canvas, points) {
     for (let k = 0; k < allLength; k++) {
         let bPointsArr = allBezierPointsArr[k];
         let length = bPointsArr.length;
+        if (k < allLength - 1) {
+            let bPA0 = bPointsArr;
+            let bPA1 = allBezierPointsArr[k + 1];
+            for (let i = 0; i < length; i++) {
+                let bP0 = bPA0[i];
+                let bP1 = bPA1[i];
+                let inLength = bP0.length;
+                for (let j = 0; j < inLength; j++) {
+                    let p0 = bP0[j];
+                    let p1 = bP1[j];
+                    Canvas.line(p0.x, p0.y, p1.x, p1.y);
+                }
+            }
+        }
+    }
+    let index = Math.round(t / BezierStep);
+    let bPointsArr = allBezierPointsArr[index];
+    if (typeof (bPointsArr) != 'undefined') {
+        let length = bPointsArr.length;
         for (let i = 0; i < length; i++) {
             let bPoints = bPointsArr[i];
             let inLength = bPoints.length;
             for (let j = 0; j < inLength; j++) {
                 let point = bPoints[j];
-                Canvas.ellipse(point.x, point.y, 10, 10);
+                Canvas.ellipse(point.x, point.y, 5, 5);
             }
-            for(let j = 0; j < inLength - 1; j++) {
+            for (let j = 0; j < inLength - 1; j++) {
                 let p0 = bPoints[j];
                 let p1 = bPoints[j + 1];
                 Canvas.line(p0.x, p0.y, p1.x, p1.y);
             }
         }
     }
+
     /*
     let count = points.length - 2;
     let newPoints = [];
@@ -150,20 +177,16 @@ function DrawCurve(Canvas, points, width) {
 
 /**@returns {Array.<Array.<Array.<Point>>>} */
 function GetBezierPoints(points) {
-    let ManualModeRange = document.getElementById("ManualModeRange");
-    let minVal = parseInt(ManualModeRange.min);
-    let maxVal = parseInt(ManualModeRange.max);
-    let d = maxVal - minVal;
-    let t = (parseInt(ManualModeRange.value) - minVal) / d;
 
     let newPoints = [];
-    let bp = GetPointsOnBezier(t, points);
-    newPoints[0] = bp;
-    /*
-    for (let t = 0, i = 0; t <= 1; t += BezierStep, i++) {
+    /*    let bp = GetPointsOnBezier(t, points);
+        newPoints[0] = bp;*/
+
+    for (let t = 0, i = 0; t < 1; t += BezierStep, i++) {
         let bp = GetPointsOnBezier(t, points);
         newPoints[i] = bp;
-    }*/
+    }
+    newPoints[newPoints.length] = GetPointsOnBezier(1, points);
     return newPoints;
 }
 
