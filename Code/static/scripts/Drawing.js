@@ -7,6 +7,10 @@ const C = {
     b: 0
 }
 
+function ApplyColor(Canvas, value, alpha) {
+    return Canvas.color(value * C.r, value * C.g, value * C.b, alpha);
+}
+
 export var PointSize = 20;
 export var GridStep = 75;
 
@@ -35,7 +39,7 @@ export function RedrawCanvas(Canvas, points) {
         DrawPoints(Canvas, points, size);
     }
     let allBezierPointsArr = GetBezierPoints(points);
-    DrawCurves(Canvas, allBezierPointsArr, 1.5, RenderCurves, ManualMode);
+    DrawCurves(Canvas, allBezierPointsArr, RenderCurves, ManualMode);
     if (ManualMode) {
         DrawManualCurves(Canvas, allBezierPointsArr, 2);
     }
@@ -63,10 +67,8 @@ function DrawGrid(Canvas, step) {
     }
 }
 
-function DrawCurves(Canvas, points, width, RenderCurves, ManualMode) {
+function DrawCurves(Canvas, points, RenderCurves, ManualMode) {
     let allLength = points.length;
-    Canvas.stroke(0);
-    Canvas.strokeWeight(width);
     let i = 0;
     let j = 0;
     if (allLength > 0) {
@@ -84,6 +86,13 @@ function DrawCurves(Canvas, points, width, RenderCurves, ManualMode) {
                     j = count - 1;
                 } else {
                     j = 0;
+                }
+                if (i != 0) {
+                    Canvas.strokeWeight(1.5);
+                    Canvas.stroke(ApplyColor(Canvas, 220 * (1.2 - (i - 2) / layerCount), 100));
+                } else {
+                    Canvas.strokeWeight(2.5);
+                    Canvas.stroke(0);
                 }
                 for (; j < count; j++) {
                     Canvas.noFill();
