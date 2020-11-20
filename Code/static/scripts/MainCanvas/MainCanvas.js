@@ -31,7 +31,7 @@ export class MainCanvas {
     }
 
     GetCanvWidth(step) {
-        let w = this.wk * window.outerWidth - this.element.style.left;
+        let w = this.wk * window.outerWidth - this.element.offsetLeft;
         if (step) {
             w = Realign(w, step);
         }
@@ -39,7 +39,7 @@ export class MainCanvas {
     }
 
     GetCanvHeight(step) {
-        let h = this.hk * window.outerHeight - this.element.style.top;
+        let h = this.hk * window.outerHeight - this.element.offsetTop;
         if (step) {
             h = Realign(h, step);
         }
