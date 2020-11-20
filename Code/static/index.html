@@ -50,6 +50,7 @@
             border-radius: 15px;
             border: 1.5px solid lightsteelblue;
         }
+
         .sourceLink:hover {
             background-color: antiquewhite;
         }
@@ -61,34 +62,36 @@
 </head>
 
 <body>
-    <div id="ZeroPoint" class="point"></div>
-    <b>Points count:</b> <b id="PointsCounter">0</b>
-    <br />
-    <button id="StartButton">Start</button>
-    <button id="ClearButton">Clear points</button>
-    <div style="position: absolute;left: 160px;top: 7px;">
-        <input type="checkbox" id="RenderPointsCheckbox" checked="checked"> Render points
+    <div>
+        <div id="ZeroPoint" class="point"></div>
+        <b>Points count:</b> <b id="PointsCounter">0</b>
+        <br />
+        <button id="StartButton">Start</button>
+        <button id="ClearButton">Clear points</button>
+        <div style="position: absolute;left: 160px;top: 7px;">
+            <input type="checkbox" id="RenderPointsCheckbox" checked="checked"> Render points
+            <br>
+            <input type="checkbox" id="RenderCurvesCheckbox"> Extra curves
+        </div>
+        <div style="position: absolute;left: 280px;top: 7px;">
+            <input id="ManualModeCheckbox" type="checkbox"> Manual mode
+            <a href="#" id="PlayButton" class="playButton" style="background-color: #32d01b;">Play</a>
+            <div>
+                <input id="ManualModeRange" type="range" min="0" style="position: absolute; width: 200px" max="10000"
+                    step="1" value="0.5">
+            </div>
+        </div>
+
         <br>
-        <input type="checkbox" id="RenderCurvesCheckbox"> Extra curves
-    </div>
-    <div style="position: absolute;left: 280px;top: 7px;">
-        <input id="ManualModeCheckbox" type="checkbox"> Manual mode
-        <a href="#" id="PlayButton" class="playButton" style="background-color: #32d01b;">Play</a>
-        <div>
-            <input id="ManualModeRange" type="range" min="0" style="position: absolute; width: 200px" max="10000"
-                step="1" value="0.5">
+        <div id="InfoText" class="info">
+            1. Press LMB to draw
+            <br>
+            2. Ctrl + LMB to erase
+            <br>
+            3. Hold Shift to disable align
         </div>
     </div>
-
     <script type="module" src="./scripts/main.js"></script>
-    <br>
-    <div id="InfoText" class="info">
-        1. Press LMB to draw
-        <br>
-        2. Ctrl + LMB to erase
-        <br>
-        3. Hold Shift to disable align
-    </div>
     <div id="CanvasHolder" style="position:inherit; padding-top: 75px;"></div>
 
     <div id="MouseOverlay" class="overlay"></div>
