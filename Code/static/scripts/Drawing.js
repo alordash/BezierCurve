@@ -41,7 +41,7 @@ export function RedrawCanvas(Canvas, points) {
     let allBezierPointsArr = GetBezierPoints(points);
     DrawCurves(Canvas, allBezierPointsArr, RenderCurves, ManualMode);
     if (ManualMode) {
-        DrawManualCurves(Canvas, allBezierPointsArr, 2);
+        DrawManualCurves(Canvas, allBezierPointsArr, 2, RenderCurves);
     }
 
     Canvas.strokeWeight(2);
@@ -112,7 +112,7 @@ function DrawCurves(Canvas, points, RenderCurves, ManualMode) {
     }
 }
 
-function DrawManualCurves(Canvas, points, width) {
+function DrawManualCurves(Canvas, points, width, RenderCurves) {
     let ManualModeRange = document.getElementById("ManualModeRange");
     let minVal = parseInt(ManualModeRange.min);
     let maxVal = parseInt(ManualModeRange.max);
@@ -132,7 +132,13 @@ function DrawManualCurves(Canvas, points, width) {
             for (let j = 0; j < inLength - 1; j++) {
                 let p0 = bPoints[j];
                 let p1 = bPoints[j + 1];
-                Canvas.line(p0.x, p0.y, p1.x, p1.y);
+                if (i > 0) {
+                    if (RenderCurves) {
+                        Canvas.line(p0.x, p0.y, p1.x, p1.y);
+                    }
+                } else {
+                    Canvas.line(p0.x, p0.y, p1.x, p1.y);
+                }
             }
         }
         for (let i = 0; i < length; i++) {
@@ -141,17 +147,22 @@ function DrawManualCurves(Canvas, points, width) {
             for (let j = 0; j < inLength; j++) {
                 let point = bPoints[j];
                 let size = 8;
+                let shouldDraw = true;
                 if (i == 0) {
                     Canvas.fill(180);
                     Canvas.strokeWeight(1.5);
                     Canvas.stroke(0);
                     size = 14;
-                } else {
+                } else if (RenderCurves) {
                     Canvas.fill(180 * 1.3, 150);
                     Canvas.strokeWeight(1);
                     Canvas.stroke(0, 100);
+                } else {
+                    shouldDraw = false;
                 }
-                Canvas.ellipse(point.x, point.y, size, size);
+                if (shouldDraw) {
+                    Canvas.ellipse(point.x, point.y, size, size);
+                }
             }
         }
     }
