@@ -140,7 +140,7 @@ function setup() {
     const s = p => { };
 
     let canvas = new p5(s, "CanvasHolder");
-    mainCanvas = new MainCanvas(canvas.canvas, canvas, 0.7, 0.7);
+    mainCanvas = new MainCanvas(canvas.canvas, canvas, 0.9, 0.9);
     mainCanvas.element = mainCanvas.canvas.canvas;
 
     mainCanvas.element.onmousemove = mainCanvas.element.onmousedown = canvasMouseEvent;
